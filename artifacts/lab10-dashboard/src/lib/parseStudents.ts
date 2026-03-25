@@ -56,7 +56,8 @@ export function enrichStudent(raw: Record<string, string>): StudentWithMeta {
     discussion_votes: parseNum(raw.votes_given ?? raw.discussion_votes),
   };
 
-  const isCode = s.learning_path?.toLowerCase().includes("code") && !s.learning_path?.toLowerCase().includes("no-code") && !s.learning_path?.toLowerCase().includes("no code");
+  const pathLower = (s.learning_path ?? "").toLowerCase().trim();
+  const isCode = pathLower.includes("code") && !pathLower.includes("no-code") && !pathLower.includes("no code");
   const total_modules = isCode ? TOTAL_MODULES_CODE : TOTAL_MODULES_NOCODE;
   const completion_rate = total_modules > 0 ? Math.min(1, s.modules_completed / total_modules) : 0;
 
@@ -73,19 +74,25 @@ export function enrichStudent(raw: Record<string, string>): StudentWithMeta {
 
   const risk_reasons: RiskReason[] = [];
 
-  if (!s.enrollment_status || s.enrollment_status.trim() === "") {
+  const statusLower = (s.enrollment_status ?? "").toLowerCase().trim();
+  const NON_ENROLLED_STATUSES = ["not_enrolled", "not enrolled", "inactive", "pending", "withdrawn", ""];
+  const isEffectivelyNotEnrolled =
+    NON_ENROLLED_STATUSES.includes(statusLower) || !s.enrolled_at;
+  const isActivelyEnrolled = !isEffectivelyNotEnrolled;
+
+  if (isEffectivelyNotEnrolled) {
     risk_reasons.push("Nunca se matriculó");
   }
-  if (s.modules_completed === 0 && days_since_enrolled > 5 && s.enrollment_status) {
+  if (s.modules_completed === 0 && days_since_enrolled > 5 && isActivelyEnrolled) {
     risk_reasons.push("Sin progreso (más de 5 días)");
   }
   if (skip_rate > 0.4 && total_checkpoint_attempts > 0) {
     risk_reasons.push("Alta tasa de saltos (>40%)");
   }
-  if (days_since_last_submission > 7 && s.enrollment_status) {
+  if (days_since_last_submission > 7 && isActivelyEnrolled) {
     risk_reasons.push("Inactivo más de 7 días");
   }
-  if (s.avg_ai_score > 0 && s.avg_ai_score < 75 && s.enrollment_status) {
+  if (s.avg_ai_score > 0 && s.avg_ai_score < 75 && isActivelyEnrolled) {
     risk_reasons.push("Puntaje AI bajo (<75)");
   }
 
