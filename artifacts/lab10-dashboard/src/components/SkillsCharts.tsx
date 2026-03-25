@@ -44,28 +44,22 @@ export default function SkillsCharts({ students }: Props) {
   const gapMap: Record<string, number> = {};
 
   students.forEach((s) => {
-    if (s.baseline_strengths) {
-      s.baseline_strengths.split(/[,;]/).forEach((item) => {
-        const key = item.trim();
-        if (key) strengthMap[key] = (strengthMap[key] ?? 0) + 1;
-      });
-    }
-    if (s.baseline_gaps) {
-      s.baseline_gaps.split(/[,;]/).forEach((item) => {
-        const key = item.trim();
-        if (key) gapMap[key] = (gapMap[key] ?? 0) + 1;
-      });
-    }
+    s.skill_strengths.forEach((cat) => {
+      strengthMap[cat] = (strengthMap[cat] ?? 0) + 1;
+    });
+    s.skill_gaps.forEach((cat) => {
+      gapMap[cat] = (gapMap[cat] ?? 0) + 1;
+    });
   });
 
   const topStrengths = Object.entries(strengthMap)
     .sort((a, b) => b[1] - a[1])
-    .slice(0, 6)
+    .slice(0, 7)
     .map(([name, count]) => ({ name, count }));
 
   const topGaps = Object.entries(gapMap)
     .sort((a, b) => b[1] - a[1])
-    .slice(0, 6)
+    .slice(0, 7)
     .map(([name, count]) => ({ name, count }));
 
   const scatterData = students
@@ -154,7 +148,7 @@ export default function SkillsCharts({ students }: Props) {
       <div className="bg-card border border-card-border rounded-xl p-5 shadcn-card">
         <h3 className="text-sm font-semibold text-foreground mb-4">Principales Fortalezas</h3>
         {topStrengths.length > 0 ? (
-          <ResponsiveContainer width="100%" height={220} debounce={0}>
+          <ResponsiveContainer width="100%" height={260} debounce={0}>
             <BarChart
               data={topStrengths}
               layout="vertical"
@@ -165,7 +159,7 @@ export default function SkillsCharts({ students }: Props) {
               <YAxis
                 dataKey="name"
                 type="category"
-                width={170}
+                width={200}
                 tick={{ fontSize: 10, fill: tickColor }}
                 stroke={tickColor}
               />
@@ -181,7 +175,7 @@ export default function SkillsCharts({ students }: Props) {
       <div className="bg-card border border-card-border rounded-xl p-5 shadcn-card">
         <h3 className="text-sm font-semibold text-foreground mb-4">Principales Áreas de Mejora</h3>
         {topGaps.length > 0 ? (
-          <ResponsiveContainer width="100%" height={220} debounce={0}>
+          <ResponsiveContainer width="100%" height={260} debounce={0}>
             <BarChart
               data={topGaps}
               layout="vertical"
@@ -192,7 +186,7 @@ export default function SkillsCharts({ students }: Props) {
               <YAxis
                 dataKey="name"
                 type="category"
-                width={170}
+                width={200}
                 tick={{ fontSize: 10, fill: tickColor }}
                 stroke={tickColor}
               />

@@ -291,13 +291,33 @@ export default function StudentTable({ students }: Props) {
                           <p className="text-muted-foreground text-xs mb-1 font-medium uppercase tracking-wide">
                             Fortalezas
                           </p>
-                          <p className="text-foreground text-xs">{s.baseline_strengths || "—"}</p>
+                          {s.skill_strengths.length > 0 ? (
+                            <div className="flex flex-wrap gap-1 mt-1">
+                              {s.skill_strengths.map((sk) => (
+                                <span key={sk} className="text-[10px] px-1.5 py-0.5 rounded bg-[#4ade80]/10 text-[#4ade80] border border-[#4ade80]/20">
+                                  {sk}
+                                </span>
+                              ))}
+                            </div>
+                          ) : (
+                            <p className="text-foreground text-xs">—</p>
+                          )}
                         </div>
                         <div>
                           <p className="text-muted-foreground text-xs mb-1 font-medium uppercase tracking-wide">
                             Áreas de Mejora
                           </p>
-                          <p className="text-foreground text-xs">{s.baseline_gaps || "—"}</p>
+                          {s.skill_gaps.length > 0 ? (
+                            <div className="flex flex-wrap gap-1 mt-1">
+                              {s.skill_gaps.map((sk) => (
+                                <span key={sk} className="text-[10px] px-1.5 py-0.5 rounded bg-[#f87171]/10 text-[#f87171] border border-[#f87171]/20">
+                                  {sk}
+                                </span>
+                              ))}
+                            </div>
+                          ) : (
+                            <p className="text-foreground text-xs">—</p>
+                          )}
                         </div>
                         <div>
                           <p className="text-muted-foreground text-xs mb-1 font-medium uppercase tracking-wide">

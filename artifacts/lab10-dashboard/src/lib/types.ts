@@ -53,4 +53,6 @@ export interface StudentWithMeta extends Student {
   is_at_risk: boolean;
   days_since_last_submission: number;
   days_since_enrolled: number;
+  skill_strengths: string[];
+  skill_gaps: string[];
 }
