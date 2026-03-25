@@ -1,0 +1,74 @@
+Build a modern, responsive web dashboard (React + Tailwind CSS) for companies to analyze how their employees are performing in an 8-week educational AI program called "10x Builders" by LAB10.
+
+Context
+Companies like Truora, Tributi, and Baco enrolled their teams in this program. Each company needs a private dashboard to see how their people are doing. The program has two tracks: "10x Builders: Code" and "10x Builders: No-Code". Each track has ~35 modules (videos with checkpoints), organized by week. Students watch videos, answer checkpoints during the video, participate in discussions, and build a final project.
+
+Data Source
+The app should load data from CSV files (one per company). Each CSV has these columns:
+
+display_name, email, registered_at, enrollment_status, enrolled_at, learning_path, batch_number, batch_start, batch_end, mentor_name, mentor_email, baseline_level, baseline_score, recommended_path, rating_code, rating_nocode, baseline_confidence, is_borderline, baseline_strengths, baseline_gaps, modules_completed, modules_in_progress, total_modules_touched, checkpoint_submissions, checkpoints_skipped, checkpoints_ai_graded, avg_ai_score, last_submission_at, project_title, project_status, project_last_updated, threads_created, replies_posted, votes_given, tools_granted, tools_claimed, tools_unclaimed
+Include a file upload area or hard-code sample CSVs for demo. The total modules per track is 35 for No-Code and 34 for Code.
+
+Sample Data (use this for the demo)
+Here are 5 sample rows to build with:
+
+display_name,email,registered_at,enrollment_status,enrolled_at,learning_path,batch_number,batch_start,batch_end,mentor_name,mentor_email,baseline_level,baseline_score,recommended_path,rating_code,rating_nocode,baseline_confidence,is_borderline,baseline_strengths,baseline_gaps,modules_completed,modules_in_progress,total_modules_touched,checkpoint_submissions,checkpoints_skipped,checkpoints_ai_graded,avg_ai_score,last_submission_at,project_title,project_status,project_last_updated,threads_created,replies_posted,votes_given,tools_granted,tools_claimed,tools_unclaimed
+edward,edward@tributi.com,2026-03-13 20:17:36,active,2026-03-13 20:50:03,10x Builders: Code,1,2026-03-09,2026-05-02,Oscar Barajas,oscar@lab10.ai,avanzado,89,code,1280,1247,alta,false,Habilidad sólida en prompting y comunicación con AI; Buena comprensión de fundamentos de AI,Fundamentos de AI y LLMs,23,0,23,28,0,28,90.7,2026-03-23 20:56:55,Tesla's Lightning Spire,draft,2026-03-23 20:57:11,0,2,0,4,0,4
+emmanuel.ruiz,emmanuel.ruiz@tributi.com,2026-03-13 20:16:33,active,2026-03-18 17:28:06,10x Builders: No-Code,1,2026-03-09,2026-05-02,gera.meraki,gera.meraki@gmail.com,intermedio,64,nocode,1232,1235,alta,true,Habilidad sólida en prompting y comunicación con AI,Fundamentos de AI y LLMs,35,2,37,50,30,20,71.5,2026-03-23 23:59:48,Tesla's Dream Machine,draft,2026-03-21 01:00:25,0,0,0,8,0,7
+lizeth.meza,lizeth.meza@tributi.com,2026-03-13 20:34:39,,,,,,,,avanzado,76,nocode,1256,1240,alta,true,Habilidad sólida en prompting y comunicación con AI; Buena comprensión de fundamentos de AI,Fundamentos de AI y LLMs,0,0,0,0,0,0,,,,,,0,0,0,0,0,0
+javier.cardona,javier.cardona@tributi.com,2026-03-14 21:37:12,active,2026-03-15 12:21:57,10x Builders: No-Code,1,2026-03-09,2026-05-02,María Camila Chala Mena,maacamii@gmail.com,inicial,0,nocode,1200,1200,baja,false,,Fundamentos de AI y LLMs; Técnicas de prompting y context engineering; Diseño de flujos Input → Process → Output,29,1,30,52,2,50,85.0,2026-03-25 02:48:50,Tesla's Dream Factory,draft,2026-03-25 13:02:47,0,0,0,8,0,0
+Simón,simon@tributi.com,2026-03-10 18:15:22,active,2026-03-10 18:26:45,10x Builders: No-Code,1,2026-03-09,2026-05-02,Valentina Ponce de León,valentina@lab10.ai,intermedio,53,nocode,1228,1212,alta,true,Buena comprensión de fundamentos de AI,Técnicas de prompting y context engineering,26,1,27,44,1,43,88.6,2026-03-23 13:20:43,Tesla's Lightning Spire,draft,2026-03-23 13:20:58,0,0,0,8,7,1
+Dashboard Sections
+1. Company Overview (top cards)
+Total enrolled students vs registered (some register but never enroll)
+Avg completion rate (modules_completed / total modules for their track)
+Avg AI score across all students
+Students at risk count (see risk logic below)
+Track distribution (how many in Code vs No-Code)
+2. Students At Risk (prominent alert section)
+A student is "at risk" if ANY of these:
+
+enrollment_status is null (registered but never enrolled)
+modules_completed is 0 and they enrolled more than 5 days ago
+checkpoints_skipped / checkpoint_submissions > 0.4 (skipping more than 40% of checkpoints)
+last_submission_at is more than 7 days ago (inactive)
+avg_ai_score < 75 (struggling with content) Show each at-risk student as a card with their name, risk reason(s), and last activity date.
+3. Student Progress Table (sortable, filterable)
+Table with all students showing:
+
+Name, email, track
+Baseline level + score (color-coded: inicial=red, intermedio=yellow, avanzado=green)
+Modules completed / total (with progress bar)
+Checkpoints submitted vs skipped (highlight if skip rate > 30%)
+Avg AI Score (color-coded: <75 red, 75-85 yellow, >85 green)
+Last active (relative time like "2 days ago", red if >7 days)
+Project title + status
+Click to expand and see full student detail
+4. Skills Distribution (charts)
+Bar chart: baseline_level distribution (how many inicial/intermedio/avanzado)
+Horizontal bar chart: most common strengths and gaps across all students
+Scatter plot: baseline_score vs current avg_ai_score (are they improving?)
+5. Engagement Metrics
+Bar chart: checkpoint_submissions per student (sorted descending)
+Highlight skip rate per student (checkpoints_skipped / checkpoint_submissions)
+Discussion participation: threads + replies + votes per student
+Tools claimed vs granted (are they using the tools they got?)
+6. Project Overview
+Grid of student projects with title, status, last updated
+Highlight projects not updated in >7 days
+Design Requirements
+Dark theme with accent color 
+#EDF25F (LAB10 brand yellow)
+Clean, minimal UI. Think Linear or Vercel dashboard aesthetic
+Use charts (recharts or chart.js)
+Mobile responsive
+Spanish language for all UI labels
+Company logo placeholder at the top
+Export to PDF button for the full report
+Date of report generation shown
+Tech Stack
+React (Vite)
+Tailwind CSS
+Recharts for charts
+Papa Parse for CSV parsing
+date-fns for date formatting (in Spanish)
