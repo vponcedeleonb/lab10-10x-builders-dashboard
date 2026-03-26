@@ -215,15 +215,56 @@ export default function Dashboard({ company }: Props) {
             {aggModules.length > 0 && (
               <section>
                 <h2 className="text-base font-semibold text-gray-700 mb-3">Progreso por Módulo — Grupo</h2>
-                <div className="bg-white border border-gray-100 rounded-xl p-5 shadow-sm">
-                  <ModuleHeatmap
-                    mode="aggregate"
-                    allModules={aggModules}
-                    totalStudents={aggTotal}
-                    totalNoCode={aggNoCode}
-                    totalCode={aggCode}
-                    trackFilter={trackFilter ?? "all"}
-                  />
+                <div className="flex gap-4 items-stretch">
+                  <div className="bg-white border border-gray-100 rounded-xl p-5 shadow-sm flex-1 min-w-0">
+                    <ModuleHeatmap
+                      mode="aggregate"
+                      allModules={aggModules}
+                      totalStudents={aggTotal}
+                      totalNoCode={aggNoCode}
+                      totalCode={aggCode}
+                      trackFilter={trackFilter ?? "all"}
+                    />
+                  </div>
+                  <div className="bg-white border border-gray-100 rounded-xl p-5 shadow-sm w-56 shrink-0 flex flex-col">
+                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">
+                      Más disciplinados
+                    </p>
+                    <ol className="flex flex-col gap-3 flex-1">
+                      {[...filteredStudents]
+                        .sort((a, b) => (b.modules_completed ?? 0) - (a.modules_completed ?? 0))
+                        .slice(0, 5)
+                        .map((s, i) => {
+                          const medals = ["🥇", "🥈", "🥉", "4.", "5."];
+                          const isTop3 = i < 3;
+                          return (
+                            <li key={s.email} className="flex items-center gap-2.5">
+                              <span className="text-sm w-5 shrink-0 text-center">
+                                {medals[i]}
+                              </span>
+                              <div className="flex-1 min-w-0">
+                                <p className={`text-xs font-medium truncate ${isTop3 ? "text-gray-800" : "text-gray-500"}`}>
+                                  {s.display_name}
+                                </p>
+                                <p className="text-[10px] text-gray-400">
+                                  {s.modules_completed ?? 0} módulos
+                                </p>
+                              </div>
+                              <div
+                                className="w-1.5 h-6 rounded-full shrink-0"
+                                style={{
+                                  backgroundColor:
+                                    i === 0 ? "#EDF25F" :
+                                    i === 1 ? "#c8c4f5" :
+                                    i === 2 ? "#d4edda" :
+                                    "#e5e7eb",
+                                }}
+                              />
+                            </li>
+                          );
+                        })}
+                    </ol>
+                  </div>
                 </div>
               </section>
             )}
