@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { Printer, Upload, LogOut } from "lucide-react";
+import { Printer, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useDashboard } from "@/lib/useDashboard";
 import OverviewCards from "@/components/OverviewCards";
@@ -11,7 +11,6 @@ import SkillsCharts from "@/components/SkillsCharts";
 import EngagementSection from "@/components/EngagementSection";
 import ProjectsGrid from "@/components/ProjectsGrid";
 import ProjectsSummary from "@/components/ProjectsSummary";
-import CsvUpload from "@/components/CsvUpload";
 import TrackBar from "@/components/TrackBar";
 import { parseProjectsCSV, type ProjectData } from "@/lib/parseProjects";
 import { clearSession, getSessionCompanies } from "@/lib/auth";
@@ -36,8 +35,7 @@ interface Props {
 
 export default function Dashboard({ company }: Props) {
   const navigate = useNavigate();
-  const { students, companyName, loaded, loading, loadCSV, loadFile } = useDashboard();
-  const [showUpload, setShowUpload] = useState(false);
+  const { students, companyName, loaded, loading, loadCSV } = useDashboard();
   const [trackFilter, setTrackFilter] = useState<"code" | "nocode" | null>(null);
   const [projects, setProjects] = useState<ProjectData[]>([]);
 
@@ -151,12 +149,6 @@ export default function Dashboard({ company }: Props) {
               <LogOut className="w-3.5 h-3.5" /> Salir
             </button>
             <button
-              onClick={() => setShowUpload((v) => !v)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-gray-200 text-gray-500 text-sm hover:text-gray-800 hover:border-gray-300 transition-colors shadow-sm"
-            >
-              <Upload className="w-3.5 h-3.5" /> Cargar CSV
-            </button>
-            <button
               onClick={() => window.print()}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-900 text-white text-sm font-medium hover:bg-gray-700 transition-colors shadow-sm"
             >
@@ -165,9 +157,6 @@ export default function Dashboard({ company }: Props) {
           </div>
         </header>
 
-        {showUpload && (
-          <CsvUpload onFile={(file) => { loadFile(file); setShowUpload(false); }} />
-        )}
 
         {loading && (
           <div className="flex items-center justify-center py-20">
