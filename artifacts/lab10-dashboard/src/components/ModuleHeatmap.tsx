@@ -1,5 +1,11 @@
 import { useState } from "react";
 import type { AggModule, ModuleEntry } from "@/lib/parseModules";
+import { X } from "lucide-react";
+
+export interface StudentInfo {
+  displayName: string;
+  completionRate: number;
+}
 
 interface AggregateProps {
   mode: "aggregate";
@@ -8,6 +14,7 @@ interface AggregateProps {
   totalNoCode?: number;
   totalCode?: number;
   trackFilter?: "nocode" | "code" | "all";
+  studentInfoMap?: Map<string, StudentInfo>;
 }
 
 interface IndividualProps {
@@ -18,6 +25,11 @@ interface IndividualProps {
 }
 
 type Props = AggregateProps | IndividualProps;
+
+interface ModalModule {
+  module: AggModule;
+  totalForTrack: number;
+}
 
 const TOTAL_WEEKS = 8;
 const AVAILABLE_WEEKS = 3;
@@ -33,12 +45,120 @@ function interpolate(ratio: number): string {
   return `rgb(${Math.round(r1 + (r2 - r1) * ratio)},${Math.round(g1 + (g2 - g1) * ratio)},${Math.round(b1 + (b2 - b1) * ratio)})`;
 }
 
+function ModuleModal({
+  data,
+  studentInfoMap,
+  allEmails,
+  onClose,
+}: {
+  data: ModalModule;
+  studentInfoMap: Map<string, StudentInfo>;
+  allEmails: string[];
+  onClose: () => void;
+}) {
+  const { module, totalForTrack } = data;
+  const completedSet = new Set(module.completedEmails);
+  const inProgressSet = new Set(module.inProgressEmails);
+
+  const rows = allEmails
+    .map((email) => {
+      const info = studentInfoMap.get(email);
+      const status = completedSet.has(email)
+        ? "completed"
+        : inProgressSet.has(email)
+        ? "in_progress"
+        : "not_started";
+      return { email, displayName: info?.displayName ?? email, completionRate: info?.completionRate ?? 0, status };
+    })
+    .sort((a, b) => {
+      const order = { completed: 0, in_progress: 1, not_started: 2 };
+      return order[a.status] - order[b.status] || b.completionRate - a.completionRate;
+    });
+
+  const completedPct = totalForTrack > 0 ? Math.round((module.completedCount / totalForTrack) * 100) : 0;
+
+  return (
+    <div
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/30 backdrop-blur-[2px]"
+      onClick={onClose}
+    >
+      <div
+        className="bg-white rounded-2xl shadow-2xl w-full max-w-sm mx-4 overflow-hidden"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-start justify-between px-5 pt-5 pb-3 border-b border-gray-100">
+          <div>
+            <p className="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-0.5">
+              Sem {module.week}
+            </p>
+            <h3 className="text-sm font-bold text-gray-900 leading-snug pr-4">{module.title}</h3>
+            <p className="text-xs text-gray-400 mt-1">
+              {module.completedCount}/{totalForTrack} completaron · {completedPct}%
+            </p>
+          </div>
+          <button
+            onClick={onClose}
+            className="text-gray-400 hover:text-gray-600 transition-colors mt-0.5 shrink-0"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+
+        <ul className="overflow-y-auto max-h-72 divide-y divide-gray-50 px-1 py-1">
+          {rows.map(({ email, displayName, completionRate, status }) => (
+            <li key={email} className="flex items-center gap-3 px-4 py-2.5">
+              <div
+                className="w-2 h-2 rounded-full shrink-0"
+                style={{
+                  backgroundColor:
+                    status === "completed"
+                      ? "#EDF25F"
+                      : status === "in_progress"
+                      ? "#A9A0EC"
+                      : "#e5e7eb",
+                }}
+              />
+              <span className="flex-1 text-sm text-gray-800 truncate">{displayName}</span>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <div className="w-16 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                  <div
+                    className="h-full rounded-full transition-all"
+                    style={{
+                      width: `${completionRate}%`,
+                      backgroundColor: completionRate >= 70 ? "#EDF25F" : completionRate >= 40 ? "#A9A0EC" : "#e5e7eb",
+                    }}
+                  />
+                </div>
+                <span className="text-[11px] text-gray-400 w-7 text-right">{Math.round(completionRate)}%</span>
+              </div>
+            </li>
+          ))}
+        </ul>
+
+        <div className="px-5 py-3 border-t border-gray-100 flex items-center gap-4">
+          {[
+            { color: "#EDF25F", label: "Completado" },
+            { color: "#A9A0EC", label: "En progreso" },
+            { color: "#e5e7eb", label: "No iniciado" },
+          ].map(({ color, label }) => (
+            <div key={label} className="flex items-center gap-1">
+              <div className="w-2 h-2 rounded-full" style={{ backgroundColor: color }} />
+              <span className="text-[10px] text-gray-400">{label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function WeekColumn({
   week,
   modules,
   onEnter,
   onMove,
   onLeave,
+  onClick,
   dotStyle,
   tipText,
 }: {
@@ -47,6 +167,7 @@ function WeekColumn({
   onEnter: (e: React.MouseEvent, m: AggModule) => void;
   onMove: (e: React.MouseEvent) => void;
   onLeave: () => void;
+  onClick?: (m: AggModule) => void;
   dotStyle: (m: AggModule) => React.CSSProperties;
   tipText: (m: AggModule) => string;
 }) {
@@ -66,11 +187,12 @@ function WeekColumn({
         {modules.map((m, i) => (
           <div
             key={i}
-            className="w-3.5 h-3.5 rounded-[3px] cursor-help transition-transform hover:scale-125 hover:z-10"
+            className={`w-3.5 h-3.5 rounded-[3px] transition-transform hover:scale-125 hover:z-10 ${onClick ? "cursor-pointer" : "cursor-help"}`}
             style={dotStyle(m)}
             onMouseEnter={(e) => onEnter(e, m)}
             onMouseMove={onMove}
             onMouseLeave={onLeave}
+            onClick={() => onClick?.(m)}
           />
         ))}
       </div>
@@ -119,15 +241,15 @@ function TrackRow({
   trackColor,
   modules,
   props,
-  tooltip,
   setTooltip,
+  onDotClick,
 }: {
   label: string;
   trackColor: string;
   modules: AggModule[];
   props: Props;
-  tooltip: { text: string; x: number; y: number } | null;
   setTooltip: React.Dispatch<React.SetStateAction<{ text: string; x: number; y: number } | null>>;
+  onDotClick?: (m: AggModule, trackTotal: number) => void;
 }) {
   const weeks = [...new Set(modules.map((m) => m.week))].sort((a, b) => a - b);
 
@@ -158,27 +280,25 @@ function TrackRow({
           ? (props as AggregateProps).totalCode ?? props.totalStudents
           : (props as AggregateProps).totalNoCode ?? props.totalStudents;
       const pct = total > 0 ? Math.round((m.completedCount / total) * 100) : 0;
-      return `${m.title} · ${pct}% (${m.completedCount}/${total} completaron)`;
+      return `${m.title} · ${pct}% · clic para ver estudiantes`;
     }
     const entry = entryMap!.get(`${m.week}::${m.title}`);
-    const status = !entry
-      ? "No iniciado"
-      : entry.status === "completed"
-      ? "Completado ✓"
-      : "En progreso";
+    const status = !entry ? "No iniciado" : entry.status === "completed" ? "Completado ✓" : "En progreso";
     return `${m.title} · ${status}`;
+  }
+
+  function getTrackTotal(m: AggModule): number {
+    if (props.mode !== "aggregate") return 0;
+    return m.track === "code"
+      ? (props as AggregateProps).totalCode ?? props.totalStudents
+      : (props as AggregateProps).totalNoCode ?? props.totalStudents;
   }
 
   return (
     <div>
       <div className="flex items-center gap-2 mb-2">
-        <span
-          className="w-1.5 h-1.5 rounded-full inline-block"
-          style={{ backgroundColor: trackColor }}
-        />
-        <span className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">
-          {label}
-        </span>
+        <span className="w-1.5 h-1.5 rounded-full inline-block" style={{ backgroundColor: trackColor }} />
+        <span className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">{label}</span>
       </div>
       <div className="flex gap-5 flex-wrap">
         {weeks.map((week) => (
@@ -189,6 +309,7 @@ function TrackRow({
             onEnter={(e, m) => setTooltip({ text: tipText(m), x: e.clientX, y: e.clientY })}
             onMove={(e) => setTooltip((t) => (t ? { ...t, x: e.clientX, y: e.clientY } : null))}
             onLeave={() => setTooltip(null)}
+            onClick={onDotClick ? (m) => onDotClick(m, getTrackTotal(m)) : undefined}
             dotStyle={dotStyle}
             tipText={tipText}
           />
@@ -204,6 +325,10 @@ function TrackRow({
 export default function ModuleHeatmap(props: Props) {
   const { allModules, trackFilter } = { trackFilter: "all" as const, ...props };
   const [tooltip, setTooltip] = useState<{ text: string; x: number; y: number } | null>(null);
+  const [modalData, setModalData] = useState<ModalModule | null>(null);
+
+  const studentInfoMap = props.mode === "aggregate" ? props.studentInfoMap : undefined;
+  const allEmails = studentInfoMap ? [...studentInfoMap.keys()] : [];
 
   const entryMap =
     props.mode === "individual"
@@ -225,10 +350,8 @@ export default function ModuleHeatmap(props: Props) {
 
   function tipText(m: AggModule): string {
     if (props.mode === "aggregate") {
-      const pct = props.totalStudents > 0
-        ? Math.round((m.completedCount / props.totalStudents) * 100)
-        : 0;
-      return `${m.title} · ${pct}% (${m.completedCount}/${props.totalStudents} completaron)`;
+      const pct = props.totalStudents > 0 ? Math.round((m.completedCount / props.totalStudents) * 100) : 0;
+      return `${m.title} · ${pct}% · clic para ver estudiantes`;
     }
     const entry = entryMap!.get(`${m.week}::${m.title}`);
     const label = !entry ? "No iniciado" : entry.status === "completed" ? "Completado ✓" : "En progreso";
@@ -237,13 +360,15 @@ export default function ModuleHeatmap(props: Props) {
 
   const showBothTracks = !trackFilter || trackFilter === "all";
 
-  const noCodeModules = allModules.filter(
-    (m) => m.track === "nocode" || m.track === "both"
-  );
-  const codeModules = allModules.filter(
-    (m) => m.track === "code" || m.track === "both"
-  );
+  const noCodeModules = allModules.filter((m) => m.track === "nocode" || m.track === "both");
+  const codeModules = allModules.filter((m) => m.track === "code" || m.track === "both");
   const filteredSingleTrack = trackFilter === "code" ? codeModules : noCodeModules;
+
+  function handleDotClick(m: AggModule, totalForTrack: number) {
+    if (props.mode !== "aggregate" || !studentInfoMap) return;
+    setTooltip(null);
+    setModalData({ module: m, totalForTrack });
+  }
 
   const legend =
     props.mode === "aggregate" ? (
@@ -255,13 +380,9 @@ export default function ModuleHeatmap(props: Props) {
           ))}
         </div>
         <span className="text-[10px] text-muted-foreground">100%</span>
-        <span className="ml-2 text-[10px] text-gray-300 flex items-center gap-0.5">
-          <svg className="w-2.5 h-2.5" viewBox="0 0 12 12" fill="currentColor">
-            <rect x="2" y="5" width="8" height="7" rx="1.5" />
-            <path d="M4 5V3.5a2 2 0 1 1 4 0V5" stroke="currentColor" strokeWidth="1.3" fill="none" strokeLinecap="round" />
-          </svg>
-          Próximamente
-        </span>
+        {studentInfoMap && (
+          <span className="ml-2 text-[10px] text-gray-400">· clic en cada cuadro para ver el detalle</span>
+        )}
       </div>
     ) : (
       <div className="flex items-center gap-3 flex-wrap">
@@ -286,11 +407,20 @@ export default function ModuleHeatmap(props: Props) {
     <div className="relative">
       {tooltip && (
         <div
-          className="fixed z-[9999] text-xs bg-gray-900 text-white px-2 py-1 rounded pointer-events-none whitespace-nowrap shadow-lg"
+          className="fixed z-[9998] text-xs bg-gray-900 text-white px-2 py-1 rounded pointer-events-none whitespace-nowrap shadow-lg"
           style={{ left: tooltip.x + 14, top: tooltip.y - 36 }}
         >
           {tooltip.text}
         </div>
+      )}
+
+      {modalData && studentInfoMap && (
+        <ModuleModal
+          data={modalData}
+          studentInfoMap={studentInfoMap}
+          allEmails={allEmails}
+          onClose={() => setModalData(null)}
+        />
       )}
 
       {showBothTracks ? (
@@ -300,8 +430,8 @@ export default function ModuleHeatmap(props: Props) {
             trackColor="#EDF25F"
             modules={noCodeModules}
             props={props}
-            tooltip={tooltip}
             setTooltip={setTooltip}
+            onDotClick={props.mode === "aggregate" && studentInfoMap ? handleDotClick : undefined}
           />
           <div className="border-t border-gray-100" />
           <TrackRow
@@ -309,8 +439,8 @@ export default function ModuleHeatmap(props: Props) {
             trackColor="#A9A0EC"
             modules={codeModules}
             props={props}
-            tooltip={tooltip}
             setTooltip={setTooltip}
+            onDotClick={props.mode === "aggregate" && studentInfoMap ? handleDotClick : undefined}
           />
         </div>
       ) : (
@@ -325,6 +455,13 @@ export default function ModuleHeatmap(props: Props) {
                 onEnter={(e, m) => setTooltip({ text: tipText(m), x: e.clientX, y: e.clientY })}
                 onMove={(e) => setTooltip((t) => (t ? { ...t, x: e.clientX, y: e.clientY } : null))}
                 onLeave={() => setTooltip(null)}
+                onClick={
+                  props.mode === "aggregate" && studentInfoMap
+                    ? (m) => handleDotClick(m, trackFilter === "code"
+                        ? ((props as AggregateProps).totalCode ?? props.totalStudents)
+                        : ((props as AggregateProps).totalNoCode ?? props.totalStudents))
+                    : undefined
+                }
                 dotStyle={dotStyle}
                 tipText={tipText}
               />

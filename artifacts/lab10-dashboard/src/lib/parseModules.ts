@@ -17,6 +17,8 @@ export interface AggModule {
   completedCount: number;
   inProgressCount: number;
   track: "nocode" | "code" | "both";
+  completedEmails: string[];
+  inProgressEmails: string[];
 }
 
 const COMPANY_CSV_NAME: Record<string, string> = {
@@ -155,6 +157,8 @@ export function computeAggregateModules(
       completedCount: entry.completed.size,
       inProgressCount: entry.inProgress.size,
       track,
+      completedEmails: [...entry.completed],
+      inProgressEmails: [...entry.inProgress],
     });
   }
   modules.sort((a, b) => a.week - b.week || a.title.localeCompare(b.title));

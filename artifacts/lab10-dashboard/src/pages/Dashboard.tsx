@@ -26,7 +26,7 @@ import SKALO_CSV from "@/data/skalo.csv?raw";
 import SKALO_PROJECTS_CSV from "@/data/skalo_projects.csv?raw";
 import MODULE_PROGRESS_CSV from "@/data/module_progress.csv?raw";
 import { computeModuleStats, computeStudentModules, computeAggregateModules } from "@/lib/parseModules";
-import ModuleHeatmap from "@/components/ModuleHeatmap";
+import ModuleHeatmap, { type StudentInfo } from "@/components/ModuleHeatmap";
 import lab10Logo from "@assets/Asset_12_1774543506448.png";
 
 const BASE_URL = import.meta.env.BASE_URL ?? "/";
@@ -100,6 +100,17 @@ export default function Dashboard({ company }: Props) {
     () => computeStudentModules(MODULE_PROGRESS_CSV, company),
     [company]
   );
+
+  const studentInfoMap = useMemo<Map<string, StudentInfo>>(() => {
+    const map = new Map<string, StudentInfo>();
+    for (const s of students) {
+      map.set(s.email.toLowerCase(), {
+        displayName: s.display_name,
+        completionRate: s.completion_rate ?? 0,
+      });
+    }
+    return map;
+  }, [students]);
 
   const allStudents = students;
 
@@ -224,6 +235,7 @@ export default function Dashboard({ company }: Props) {
                       totalNoCode={aggNoCode}
                       totalCode={aggCode}
                       trackFilter={trackFilter ?? "all"}
+                      studentInfoMap={studentInfoMap}
                     />
                   </div>
                   <div className="bg-white border border-gray-100 rounded-xl p-5 shadow-sm w-56 shrink-0 flex flex-col">
