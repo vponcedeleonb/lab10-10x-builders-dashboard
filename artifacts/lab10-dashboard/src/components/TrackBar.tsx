@@ -33,15 +33,11 @@ export default function TrackBar({ codeCount, noCodeCount, activeFilter, onFilte
       <div className="flex rounded-lg overflow-hidden h-9 w-full border border-border" style={{ cursor: "pointer" }}>
         <button
           onClick={() => handleClick("code")}
-          className="flex items-center justify-center gap-2 transition-all duration-300 group"
+          className="flex items-center justify-center gap-2 transition-all duration-300"
           style={{
             width: `${codePercent}%`,
-            backgroundColor: activeFilter === "nocode"
-              ? "#e5e7eb"
-              : activeFilter === "code"
-              ? "#1d4ed8"
-              : "#3b82f6",
-            opacity: activeFilter === "nocode" ? 0.4 : 1,
+            backgroundColor: activeFilter === "nocode" ? "#e5e7eb" : "#000000",
+            opacity: activeFilter === "nocode" ? 0.35 : 1,
           }}
           title={`Code: ${codeCount} estudiantes — clic para filtrar`}
         >
@@ -53,7 +49,7 @@ export default function TrackBar({ codeCount, noCodeCount, activeFilter, onFilte
           </span>
           <span
             className="text-xs font-bold"
-            style={{ color: activeFilter === "nocode" ? "#9ca3af" : "rgba(255,255,255,0.9)", fontFamily: "'PT Mono', monospace" }}
+            style={{ color: activeFilter === "nocode" ? "#9ca3af" : "rgba(255,255,255,0.75)", fontFamily: "'PT Mono', monospace" }}
           >
             {codeCount}
           </span>
@@ -64,12 +60,8 @@ export default function TrackBar({ codeCount, noCodeCount, activeFilter, onFilte
           className="flex items-center justify-center gap-2 transition-all duration-300"
           style={{
             width: `${noCodePercent}%`,
-            backgroundColor: activeFilter === "code"
-              ? "#e5e7eb"
-              : activeFilter === "nocode"
-              ? "#7c3aed"
-              : "#8b5cf6",
-            opacity: activeFilter === "code" ? 0.4 : 1,
+            backgroundColor: activeFilter === "code" ? "#e5e7eb" : "#A9A0EC",
+            opacity: activeFilter === "code" ? 0.35 : 1,
           }}
           title={`No-Code: ${noCodeCount} estudiantes — clic para filtrar`}
         >
@@ -81,7 +73,7 @@ export default function TrackBar({ codeCount, noCodeCount, activeFilter, onFilte
           </span>
           <span
             className="text-xs font-bold"
-            style={{ color: activeFilter === "code" ? "#9ca3af" : "rgba(255,255,255,0.9)", fontFamily: "'PT Mono', monospace" }}
+            style={{ color: activeFilter === "code" ? "#9ca3af" : "rgba(255,255,255,0.85)", fontFamily: "'PT Mono', monospace" }}
           >
             {noCodeCount}
           </span>
