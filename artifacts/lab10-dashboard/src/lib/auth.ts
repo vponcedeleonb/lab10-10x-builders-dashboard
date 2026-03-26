@@ -16,7 +16,7 @@ export const AUTHORIZED_EMAILS: Record<string, string[]> = {
   "arivera@mono.la": ["mono"],
 
   // ── Bacu ─────────────────────────────────────────────────────────────
-  "juliana.saavedra@bacu.co": ["bacu"],
+  "juliana.saavedra@baco.com.co": ["bacu"],
   "stephanie@bacu.co": ["bacu"],
 
   // ── Skalo ────────────────────────────────────────────────────────────
