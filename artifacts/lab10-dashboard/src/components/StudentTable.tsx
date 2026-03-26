@@ -370,6 +370,14 @@ export default function StudentTable({ students, modulesByEmail, allModules }: P
                               mode="individual"
                               allModules={allModules}
                               studentEntries={modulesByEmail?.get(s.email.toLowerCase()) ?? []}
+                              trackFilter={
+                                (() => {
+                                  const p = (s.learning_path ?? "").toLowerCase();
+                                  return p.includes("code") && !p.includes("no-code") && !p.includes("no code")
+                                    ? "code"
+                                    : "nocode";
+                                })()
+                              }
                             />
                           </div>
                         )}
