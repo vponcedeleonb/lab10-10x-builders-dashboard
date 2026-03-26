@@ -5,6 +5,18 @@ import type { StudentWithMeta } from "@/lib/types";
 import type { ProjectData } from "@/lib/parseProjects";
 import { Clock, FolderOpen, X, FileText } from "lucide-react";
 
+function deriveTitle(content: string, fallback: string): string {
+  if (!content || content.trim().length < 20) return fallback || "Proyecto en desarrollo";
+  const segments = content
+    .split(/\s*\|\s*/)
+    .map((s) => s.replace(/^##\s*[\w\sÀ-ÿ]+/, "").trim())
+    .filter((s) => s.length > 20);
+  const first = segments[0] ?? "";
+  const sentence = first.split(/\.\s+/)[0]?.trim() ?? first;
+  if (!sentence) return fallback || "Proyecto en desarrollo";
+  return sentence.length <= 72 ? sentence : sentence.slice(0, 69) + "…";
+}
+
 interface Props {
   students: StudentWithMeta[];
   projects?: ProjectData[];
@@ -199,11 +211,9 @@ export default function ProjectsGrid({ students, projects = [] }: Props) {
                     <Clock className="w-3.5 h-3.5 text-red-400 shrink-0 mt-0.5" />
                   )}
                 </div>
-                {p.project_title && (
-                  <p className="text-[11px] text-gray-400 leading-tight line-clamp-2">
-                    {p.project_title}
-                  </p>
-                )}
+                <p className="text-[11px] text-gray-500 leading-snug line-clamp-2">
+                  {deriveTitle(p.project_content_text, p.project_title)}
+                </p>
                 <div className="flex items-center justify-between mt-auto pt-1">
                   <span
                     className={`text-[10px] px-1.5 py-0.5 rounded border capitalize ${

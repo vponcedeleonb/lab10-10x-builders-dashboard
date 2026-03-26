@@ -135,11 +135,11 @@ export default function Dashboard() {
             </section>
 
             <section>
-              <ProjectsGrid students={filteredStudents} projects={projects} />
+              <ProjectsSummary projects={projects} apiBase={API_BASE} />
             </section>
 
             <section>
-              <ProjectsSummary projects={projects} apiBase={API_BASE} />
+              <ProjectsGrid students={filteredStudents} projects={projects} />
             </section>
 
             <footer className="text-center text-xs text-gray-300 py-4 border-t border-gray-100 mt-4">

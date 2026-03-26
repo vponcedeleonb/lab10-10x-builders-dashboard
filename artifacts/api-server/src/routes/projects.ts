@@ -31,7 +31,7 @@ router.post("/projects/summary", async (req, res) => {
         {
           role: "system",
           content:
-            "Eres un analista de programas de formación en IA. Analiza los proyectos de los estudiantes y devuelve un objeto JSON con este esquema exacto:\n{\n  \"categories\": [\n    { \"name\": \"Nombre de categoría\", \"count\": N, \"description\": \"Una oración corta\", \"examples\": [\"título1\", \"título2\"] }\n  ],\n  \"insight\": \"Un párrafo de 2-3 oraciones con las tendencias principales del grupo.\"\n}\nUsa 3-5 categorías temáticas en español. No incluyas nada fuera del JSON.",
+            "Eres un analista de programas de formación en IA. Analiza los proyectos de los estudiantes y devuelve un objeto JSON con este esquema exacto:\n{\n  \"categories\": [\n    { \"name\": \"Nombre de categoría\", \"count\": N, \"description\": \"Una oración corta describiendo el tema\", \"examples\": [\"nombre_estudiante1\", \"nombre_estudiante2\"] }\n  ],\n  \"insight\": \"Un párrafo de 2-3 oraciones con las tendencias principales del grupo.\"\n}\nUsa 3-5 categorías temáticas en español. En el campo 'examples' pon únicamente los nombres de los estudiantes que pertenecen a esa categoría (no los títulos de los proyectos). No incluyas nada fuera del JSON.",
         },
         {
           role: "user",
