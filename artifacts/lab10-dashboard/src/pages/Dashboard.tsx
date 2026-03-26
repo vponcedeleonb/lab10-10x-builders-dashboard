@@ -14,7 +14,7 @@ import ProjectsSummary from "@/components/ProjectsSummary";
 import CsvUpload from "@/components/CsvUpload";
 import TrackBar from "@/components/TrackBar";
 import { parseProjectsCSV, type ProjectData } from "@/lib/parseProjects";
-import { clearSession } from "@/lib/auth";
+import { clearSession, getSessionCompanies } from "@/lib/auth";
 
 import TRIBUTI_CSV from "@/data/tributi.csv?raw";
 import TRIBUTI_PROJECTS_CSV from "@/data/tributi_projects.csv?raw";
@@ -49,9 +49,15 @@ export default function Dashboard({ company }: Props) {
     // Other companies: data will be loaded once their CSVs are available
   }, [company]);
 
+  const multiCompany = getSessionCompanies().length > 1;
+
   const handleLogout = () => {
     clearSession();
     navigate("/");
+  };
+
+  const handleSwitchCompany = () => {
+    navigate("/select");
   };
 
   const allStudents = students;
@@ -90,9 +96,16 @@ export default function Dashboard({ company }: Props) {
               </h1>
             </div>
           </div>
-          <button onClick={handleLogout} className="flex items-center gap-1.5 text-sm text-gray-400 hover:text-gray-700 transition-colors">
-            <LogOut className="w-4 h-4" /> Salir
-          </button>
+          <div className="flex items-center gap-3">
+            {multiCompany && (
+              <button onClick={handleSwitchCompany} className="text-sm text-gray-500 hover:text-gray-800 transition-colors">
+                Cambiar empresa
+              </button>
+            )}
+            <button onClick={handleLogout} className="flex items-center gap-1.5 text-sm text-gray-400 hover:text-gray-700 transition-colors">
+              <LogOut className="w-4 h-4" /> Salir
+            </button>
+          </div>
         </header>
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
@@ -123,6 +136,14 @@ export default function Dashboard({ company }: Props) {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            {multiCompany && (
+              <button
+                onClick={handleSwitchCompany}
+                className="px-3 py-1.5 rounded-lg border border-gray-200 text-gray-500 text-sm hover:text-gray-800 hover:border-gray-300 transition-colors"
+              >
+                Cambiar empresa
+              </button>
+            )}
             <button
               onClick={handleLogout}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 text-gray-400 text-sm hover:text-gray-700 hover:border-gray-300 transition-colors"

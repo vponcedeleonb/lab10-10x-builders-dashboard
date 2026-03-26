@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getCompanyForEmail, setSession } from "@/lib/auth";
+import { getCompaniesForEmail, setSession } from "@/lib/auth";
 import lab10Logo from "@assets/Asset_12_1774543506448.png";
 
 export default function LoginPage() {
@@ -14,13 +14,13 @@ export default function LoginPage() {
     setError("");
     setLoading(true);
 
-    const company = getCompanyForEmail(email.trim());
+    const companies = getCompaniesForEmail(email.trim());
 
     setTimeout(() => {
       setLoading(false);
-      if (company) {
+      if (companies.length > 0) {
         setSession(email.trim().toLowerCase());
-        navigate(`/${company}`);
+        navigate(companies.length === 1 ? `/${companies[0]}` : "/select");
       } else {
         setError("Este correo no está autorizado para acceder al dashboard.");
       }

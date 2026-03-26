@@ -1,30 +1,30 @@
-// Add authorized emails here — key: email (lowercase), value: company slug
-export const AUTHORIZED_EMAILS: Record<string, string> = {
+// Maps email (lowercase) → array of company slugs the user can access
+export const AUTHORIZED_EMAILS: Record<string, string[]> = {
   // ── Tributi ──────────────────────────────────────────────────────────
-  "andres@tributi.com": "tributi",
-  "andres.penata@tributi.com": "tributi",
-  "angie.ceballos@tributi.com": "tributi",
-  "carolina.pulgarin@tributi.com": "tributi",
-  // add more Tributi contacts here
+  "joan.jimenez@tributi.com": ["tributi"],
 
   // ── Truora ───────────────────────────────────────────────────────────
-  // "hr@truora.com": "truora",
+  "dbilbao@truora.com":  ["truora"],
+  "kgarrido@truora.com": ["truora"],
+
+  // ── LAB10 (all companies) ────────────────────────────────────────────
+  "valentina@lab10.ai": ["tributi", "truora", "mono", "bacu"],
 
   // ── Mono ─────────────────────────────────────────────────────────────
-  // "hr@mono.com": "mono",
+  // "hr@mono.com": ["mono"],
 
   // ── Bacu ─────────────────────────────────────────────────────────────
-  // "hr@bacu.com": "bacu",
+  // "hr@bacu.com": ["bacu"],
 };
 
 const SESSION_KEY = "lab10_auth_email";
 
-export function getCompanyForEmail(email: string): string | null {
-  return AUTHORIZED_EMAILS[email.toLowerCase().trim()] ?? null;
+export function getCompaniesForEmail(email: string): string[] {
+  return AUTHORIZED_EMAILS[email.toLowerCase().trim()] ?? [];
 }
 
 export function setSession(email: string): void {
-  sessionStorage.setItem(SESSION_KEY, email);
+  sessionStorage.setItem(SESSION_KEY, email.toLowerCase().trim());
 }
 
 export function getSession(): string | null {
@@ -35,8 +35,18 @@ export function clearSession(): void {
   sessionStorage.removeItem(SESSION_KEY);
 }
 
-export function getSessionCompany(): string | null {
+export function getSessionCompanies(): string[] {
   const email = getSession();
-  if (!email) return null;
-  return getCompanyForEmail(email);
+  if (!email) return [];
+  return getCompaniesForEmail(email);
+}
+
+// For backwards-compat — returns first company if only one, null otherwise
+export function getSessionCompany(): string | null {
+  const companies = getSessionCompanies();
+  return companies.length === 1 ? companies[0] : null;
+}
+
+export function canAccessCompany(company: string): boolean {
+  return getSessionCompanies().includes(company);
 }
