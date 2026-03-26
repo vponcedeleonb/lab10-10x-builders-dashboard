@@ -177,6 +177,9 @@ export default function ProjectsGrid({ students, projects = [] }: Props) {
     return !!studentsByEmail[p.email.toLowerCase()];
   });
 
+  const withContent = visibleProjects.filter((p) => p.project_content_text.trim().length > 20);
+  const withoutContent = visibleProjects.filter((p) => p.project_content_text.trim().length <= 20);
+
   return (
     <div className="bg-white border border-gray-100 rounded-xl p-5 shadow-sm">
       <h2 className="text-base font-semibold text-gray-900 mb-4">
@@ -187,64 +190,92 @@ export default function ProjectsGrid({ students, projects = [] }: Props) {
       {visibleProjects.length === 0 ? (
         <p className="text-gray-400 text-sm">Sin proyectos registrados.</p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
-          {visibleProjects.map((p) => {
-            const daysSinceUpdate = p.project_updated_at
-              ? differenceInDays(now, parseISO(p.project_updated_at))
-              : null;
-            const isStale = daysSinceUpdate !== null && daysSinceUpdate > 7;
+        <div className="space-y-6">
+          {withContent.length > 0 && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+              {withContent.map((p) => {
+                const daysSinceUpdate = p.project_updated_at
+                  ? differenceInDays(now, parseISO(p.project_updated_at))
+                  : null;
+                const isStale = daysSinceUpdate !== null && daysSinceUpdate > 7;
 
-            return (
-              <div
-                key={`${p.email}-${p.project_title}`}
-                className={`rounded-xl p-4 border flex flex-col gap-2 ${
-                  isStale
-                    ? "border-red-100 bg-red-50/30"
-                    : "border-gray-100 bg-gray-50/50"
-                }`}
-              >
-                <div className="flex items-start justify-between gap-2">
-                  <p className="text-xs text-gray-600 font-medium leading-tight line-clamp-1">
-                    {p.display_name || p.email}
-                  </p>
-                  {isStale && (
-                    <Clock className="w-3.5 h-3.5 text-red-400 shrink-0 mt-0.5" />
-                  )}
-                </div>
-                <p className="text-[11px] text-gray-500 leading-snug line-clamp-2">
-                  {deriveTitle(p.project_content_text, p.project_title)}
-                </p>
-                <div className="flex items-center justify-between mt-auto pt-1">
-                  <span
-                    className={`text-[10px] px-1.5 py-0.5 rounded border capitalize ${
-                      p.project_status === "submitted"
-                        ? "bg-green-50 text-green-700 border-green-200"
-                        : "bg-gray-50 text-gray-400 border-gray-200"
+                return (
+                  <div
+                    key={`${p.email}-${p.project_title}`}
+                    className={`rounded-xl p-4 border flex flex-col gap-2 ${
+                      isStale
+                        ? "border-red-100 bg-red-50/30"
+                        : "border-gray-100 bg-gray-50/50"
                     }`}
-                    style={{ fontFamily: "'PT Mono', monospace" }}
                   >
-                    {p.project_status || "—"}
-                  </span>
-                  {p.project_updated_at && (
-                    <span className={`text-[10px] ${isStale ? "text-red-400" : "text-gray-400"}`}>
-                      {format(parseISO(p.project_updated_at), "d MMM", { locale: es })}
-                    </span>
-                  )}
-                </div>
-                {isStale && (
-                  <p className="text-[10px] text-red-400">
-                    Sin actualizar en {daysSinceUpdate} días
-                  </p>
-                )}
-                <button
-                  onClick={() => setOpenModal({ project: p, student: p.student })}
-                  className="mt-1 w-full text-xs py-1.5 rounded-lg border border-gray-200 text-gray-600 hover:border-gray-400 hover:text-gray-900 transition-colors font-medium bg-white"
-                >
-                  Ver proyecto
-                </button>
+                    <div className="flex items-start justify-between gap-2">
+                      <p className="text-xs text-gray-600 font-medium leading-tight line-clamp-1">
+                        {p.display_name || p.email}
+                      </p>
+                      {isStale && (
+                        <Clock className="w-3.5 h-3.5 text-red-400 shrink-0 mt-0.5" />
+                      )}
+                    </div>
+                    <p className="text-[11px] text-gray-500 leading-snug line-clamp-2">
+                      {deriveTitle(p.project_content_text, p.project_title)}
+                    </p>
+                    <div className="flex items-center justify-between mt-auto pt-1">
+                      <span
+                        className={`text-[10px] px-1.5 py-0.5 rounded border capitalize ${
+                          p.project_status === "submitted"
+                            ? "bg-green-50 text-green-700 border-green-200"
+                            : "bg-gray-50 text-gray-400 border-gray-200"
+                        }`}
+                        style={{ fontFamily: "'PT Mono', monospace" }}
+                      >
+                        {p.project_status || "—"}
+                      </span>
+                      {p.project_updated_at && (
+                        <span className={`text-[10px] ${isStale ? "text-red-400" : "text-gray-400"}`}>
+                          {format(parseISO(p.project_updated_at), "d MMM", { locale: es })}
+                        </span>
+                      )}
+                    </div>
+                    {isStale && (
+                      <p className="text-[10px] text-red-400">
+                        Sin actualizar en {daysSinceUpdate} días
+                      </p>
+                    )}
+                    <button
+                      onClick={() => setOpenModal({ project: p, student: p.student })}
+                      className="mt-1 w-full text-xs py-1.5 rounded-lg border border-gray-200 text-gray-600 hover:border-gray-400 hover:text-gray-900 transition-colors font-medium bg-white"
+                    >
+                      Ver proyecto
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {withoutContent.length > 0 && (
+            <div>
+              <p className="text-[11px] text-gray-400 uppercase tracking-wider font-semibold mb-2" style={{ fontFamily: "'PT Mono', monospace" }}>
+                Sin contenido registrado ({withoutContent.length})
+              </p>
+              <div className="flex flex-wrap gap-x-6 gap-y-1.5">
+                {withoutContent.map((p) => (
+                  <div key={`${p.email}-${p.project_title}`} className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-gray-300 shrink-0" />
+                    <span className="text-sm text-gray-500">{p.display_name || p.email}</span>
+                    {p.project_status && (
+                      <span
+                        className="text-[10px] text-gray-400"
+                        style={{ fontFamily: "'PT Mono', monospace" }}
+                      >
+                        · {p.project_status}
+                      </span>
+                    )}
+                  </div>
+                ))}
               </div>
-            );
-          })}
+            </div>
+          )}
         </div>
       )}
 
