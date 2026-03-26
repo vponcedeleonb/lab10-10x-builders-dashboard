@@ -17,6 +17,8 @@ import { clearSession, getSessionCompanies } from "@/lib/auth";
 
 import TRIBUTI_CSV from "@/data/tributi.csv?raw";
 import TRIBUTI_PROJECTS_CSV from "@/data/tributi_projects.csv?raw";
+import TRUORA_CSV from "@/data/truora.csv?raw";
+import TRUORA_PROJECTS_CSV from "@/data/truora_projects.csv?raw";
 import lab10Logo from "@assets/Asset_12_1774543506448.png";
 
 const BASE_URL = import.meta.env.BASE_URL ?? "/";
@@ -43,8 +45,11 @@ export default function Dashboard({ company }: Props) {
     if (company === "tributi") {
       loadCSV(TRIBUTI_CSV, "Tributi");
       setProjects(parseProjectsCSV(TRIBUTI_PROJECTS_CSV));
+    } else if (company === "truora") {
+      loadCSV(TRUORA_CSV, "Truora");
+      setProjects(parseProjectsCSV(TRUORA_PROJECTS_CSV));
     }
-    // Other companies: data will be loaded once their CSVs are available
+    // Mono, Bacu: data will be loaded once their CSVs are available
   }, [company]);
 
   const multiCompany = getSessionCompanies().length > 1;
