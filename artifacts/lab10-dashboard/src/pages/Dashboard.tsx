@@ -105,9 +105,12 @@ export default function Dashboard({ company }: Props) {
   const studentInfoMap = useMemo<Map<string, StudentInfo>>(() => {
     const map = new Map<string, StudentInfo>();
     for (const s of students) {
+      const p = (s.learning_path ?? "").toLowerCase();
+      const isCode = p.includes("code") && !p.includes("no-code") && !p.includes("no code");
       map.set(s.email.toLowerCase(), {
         displayName: s.display_name,
         completionRate: s.completion_rate ?? 0,
+        track: isCode ? "code" : "nocode",
       });
     }
     return map;

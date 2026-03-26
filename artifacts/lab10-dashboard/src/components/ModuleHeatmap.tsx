@@ -5,6 +5,7 @@ import { X } from "lucide-react";
 export interface StudentInfo {
   displayName: string;
   completionRate: number;
+  track: "nocode" | "code";
 }
 
 interface AggregateProps {
@@ -45,37 +46,45 @@ function interpolate(ratio: number): string {
   return `rgb(${Math.round(r1 + (r2 - r1) * ratio)},${Math.round(g1 + (g2 - g1) * ratio)},${Math.round(b1 + (b2 - b1) * ratio)})`;
 }
 
+const STATUS_CONFIG = {
+  completed:   { color: "#EDF25F", label: "Completado",  border: "#d4dc00" },
+  in_progress: { color: "#A9A0EC", label: "En progreso", border: "#7c72d8" },
+  not_started: { color: "#e5e7eb", label: "No iniciado", border: "#d1d5db" },
+} as const;
+
 function ModuleModal({
   data,
   studentInfoMap,
-  allEmails,
   onClose,
 }: {
   data: ModalModule;
   studentInfoMap: Map<string, StudentInfo>;
-  allEmails: string[];
   onClose: () => void;
 }) {
   const { module, totalForTrack } = data;
   const completedSet = new Set(module.completedEmails);
   const inProgressSet = new Set(module.inProgressEmails);
 
-  const rows = allEmails
-    .map((email) => {
-      const info = studentInfoMap.get(email);
-      const status = completedSet.has(email)
+  const trackStudents = [...studentInfoMap.entries()].filter(
+    ([, info]) => info.track === module.track
+  );
+
+  const rows = trackStudents
+    .map(([email, info]) => {
+      const status: keyof typeof STATUS_CONFIG = completedSet.has(email)
         ? "completed"
         : inProgressSet.has(email)
         ? "in_progress"
         : "not_started";
-      return { email, displayName: info?.displayName ?? email, completionRate: info?.completionRate ?? 0, status };
+      return { email, displayName: info.displayName, status };
     })
     .sort((a, b) => {
       const order = { completed: 0, in_progress: 1, not_started: 2 };
-      return order[a.status] - order[b.status] || b.completionRate - a.completionRate;
+      return order[a.status] - order[b.status] || a.displayName.localeCompare(b.displayName);
     });
 
   const completedPct = totalForTrack > 0 ? Math.round((module.completedCount / totalForTrack) * 100) : 0;
+  const trackLabel = module.track === "code" ? "Code" : "No-Code";
 
   return (
     <div
@@ -89,7 +98,7 @@ function ModuleModal({
         <div className="flex items-start justify-between px-5 pt-5 pb-3 border-b border-gray-100">
           <div>
             <p className="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-0.5">
-              Sem {module.week}
+              {trackLabel} · Sem {module.week}
             </p>
             <h3 className="text-sm font-bold text-gray-900 leading-snug pr-4">{module.title}</h3>
             <p className="text-xs text-gray-400 mt-1">
@@ -105,47 +114,36 @@ function ModuleModal({
         </div>
 
         <ul className="overflow-y-auto max-h-72 divide-y divide-gray-50 px-1 py-1">
-          {rows.map(({ email, displayName, completionRate, status }) => (
-            <li key={email} className="flex items-center gap-3 px-4 py-2.5">
-              <div
-                className="w-2 h-2 rounded-full shrink-0"
-                style={{
-                  backgroundColor:
-                    status === "completed"
-                      ? "#EDF25F"
-                      : status === "in_progress"
-                      ? "#A9A0EC"
-                      : "#e5e7eb",
-                }}
-              />
-              <span className="flex-1 text-sm text-gray-800 truncate">{displayName}</span>
-              <div className="flex items-center gap-1.5 shrink-0">
-                <div className="w-16 h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                  <div
-                    className="h-full rounded-full transition-all"
-                    style={{
-                      width: `${completionRate}%`,
-                      backgroundColor: completionRate >= 70 ? "#EDF25F" : completionRate >= 40 ? "#A9A0EC" : "#e5e7eb",
-                    }}
-                  />
-                </div>
-                <span className="text-[11px] text-gray-400 w-7 text-right">{Math.round(completionRate)}%</span>
-              </div>
-            </li>
-          ))}
+          {rows.map(({ email, displayName, status }) => {
+            const cfg = STATUS_CONFIG[status];
+            return (
+              <li key={email} className="flex items-center gap-3 px-4 py-2.5">
+                <div
+                  className="w-2.5 h-2.5 rounded-full shrink-0 border"
+                  style={{ backgroundColor: cfg.color, borderColor: cfg.border }}
+                />
+                <span className="flex-1 text-sm text-gray-800 truncate">{displayName}</span>
+                <span
+                  className="text-[11px] font-medium shrink-0"
+                  style={{ color: status === "not_started" ? "#9ca3af" : cfg.border }}
+                >
+                  {cfg.label}
+                </span>
+              </li>
+            );
+          })}
         </ul>
 
         <div className="px-5 py-3 border-t border-gray-100 flex items-center gap-4">
-          {[
-            { color: "#EDF25F", label: "Completado" },
-            { color: "#A9A0EC", label: "En progreso" },
-            { color: "#e5e7eb", label: "No iniciado" },
-          ].map(({ color, label }) => (
-            <div key={label} className="flex items-center gap-1">
-              <div className="w-2 h-2 rounded-full" style={{ backgroundColor: color }} />
-              <span className="text-[10px] text-gray-400">{label}</span>
-            </div>
-          ))}
+          {(Object.keys(STATUS_CONFIG) as (keyof typeof STATUS_CONFIG)[]).map((key) => {
+            const cfg = STATUS_CONFIG[key];
+            return (
+              <div key={key} className="flex items-center gap-1">
+                <div className="w-2 h-2 rounded-full border" style={{ backgroundColor: cfg.color, borderColor: cfg.border }} />
+                <span className="text-[10px] text-gray-400">{cfg.label}</span>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>
@@ -328,7 +326,6 @@ export default function ModuleHeatmap(props: Props) {
   const [modalData, setModalData] = useState<ModalModule | null>(null);
 
   const studentInfoMap = props.mode === "aggregate" ? props.studentInfoMap : undefined;
-  const allEmails = studentInfoMap ? [...studentInfoMap.keys()] : [];
 
   const entryMap =
     props.mode === "individual"
@@ -418,7 +415,6 @@ export default function ModuleHeatmap(props: Props) {
         <ModuleModal
           data={modalData}
           studentInfoMap={studentInfoMap}
-          allEmails={allEmails}
           onClose={() => setModalData(null)}
         />
       )}
