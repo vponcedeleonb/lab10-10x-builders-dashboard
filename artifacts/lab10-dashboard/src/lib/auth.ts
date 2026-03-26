@@ -11,10 +11,11 @@ export const AUTHORIZED_EMAILS: Record<string, string[]> = {
   "valentina@lab10.ai": ["tributi", "truora", "mono", "bacu"],
 
   // ── Mono ─────────────────────────────────────────────────────────────
-  // "hr@mono.com": ["mono"],
+  "arivera@mono.la": ["mono"],
 
   // ── Bacu ─────────────────────────────────────────────────────────────
-  // add Bacu admin emails here, e.g.: "hr@baco.com.co": ["bacu"],
+  "juliana.saavedra@bacu.co": ["bacu"],
+  "stephanie@bacu.co": ["bacu"],
 };
 
 const SESSION_KEY = "lab10_auth_email";
