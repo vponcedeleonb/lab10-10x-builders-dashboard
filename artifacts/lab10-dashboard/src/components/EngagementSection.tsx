@@ -3,22 +3,24 @@ import {
 } from "recharts";
 import type { StudentWithMeta } from "@/lib/types";
 
-const CHART_COLORS = {
-  blue: "#0079F2",
-  yellow: "#EDF25F",
-  red: "#f87171",
-  green: "#4ade80",
+const LAB10 = {
+  yellow:   "#EDF25F",
+  purple:   "#A9A0EC",
+  black:    "#000000",
+  light:    "#D9E3E3",
+  gray:     "#6b7280",
+  gridLine: "rgba(0,0,0,0.07)",
 };
 
 function CustomTooltip({ active, payload, label }: { active?: boolean; payload?: { value: number; name: string }[]; label?: string }) {
   if (!active || !payload || payload.length === 0) return null;
   return (
-    <div style={{ backgroundColor: "#1e2330", borderRadius: 6, padding: "8px 14px", border: "1px solid #333", fontSize: 13 }}>
-      <div style={{ marginBottom: 4, fontWeight: 500, color: "#eee" }}>{label}</div>
+    <div style={{ backgroundColor: "#fff", borderRadius: 8, padding: "8px 14px", border: "1px solid #e5e7eb", fontSize: 13, boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}>
+      <div style={{ marginBottom: 4, fontWeight: 600, color: "#111" }}>{label}</div>
       {payload.map((entry, i) => (
-        <div key={i} style={{ display: "flex", gap: 8, color: "#ccc" }}>
+        <div key={i} style={{ display: "flex", gap: 8, color: "#6b7280" }}>
           <span>{entry.name}</span>
-          <span style={{ marginLeft: "auto", fontWeight: 600, color: "#EDF25F" }}>{entry.value}</span>
+          <span style={{ marginLeft: "auto", fontWeight: 700, color: "#000" }}>{entry.value}</span>
         </div>
       ))}
     </div>
@@ -30,8 +32,8 @@ interface Props {
 }
 
 export default function EngagementSection({ students }: Props) {
-  const gridColor = "rgba(255,255,255,0.08)";
-  const tickColor = "#98999C";
+  const gridColor = LAB10.gridLine;
+  const tickColor = LAB10.gray;
 
   const enrolled = students.filter((s) => s.enrollment_status === "active");
 
@@ -40,7 +42,6 @@ export default function EngagementSection({ students }: Props) {
       name: s.display_name.split(".")[0] || s.display_name,
       submitted: s.checkpoint_submissions,
       skipped: s.checkpoints_skipped,
-      skip_rate: s.skip_rate,
     }))
     .sort((a, b) => b.submitted - a.submitted);
 
@@ -65,8 +66,8 @@ export default function EngagementSection({ students }: Props) {
 
   return (
     <div className="space-y-4">
-      <div className="bg-card border border-card-border rounded-xl p-5 shadcn-card">
-        <h3 className="text-sm font-semibold text-foreground mb-4">
+      <div className="bg-white border border-gray-100 rounded-xl p-5 shadow-sm">
+        <h3 className="text-sm font-semibold text-gray-900 mb-4">
           Checkpoints por Estudiante (enviados vs saltados)
         </h3>
         <ResponsiveContainer width="100%" height={260} debounce={0}>
@@ -75,72 +76,80 @@ export default function EngagementSection({ students }: Props) {
             <XAxis
               dataKey="name"
               tick={{ fontSize: 10, fill: tickColor }}
-              stroke={tickColor}
+              stroke={gridColor}
               angle={-35}
               textAnchor="end"
               interval={0}
             />
-            <YAxis tick={{ fontSize: 11, fill: tickColor }} stroke={tickColor} allowDecimals={false} />
-            <Tooltip content={<CustomTooltip />} cursor={false} />
-            <Bar dataKey="submitted" name="Enviados" fill={CHART_COLORS.blue} fillOpacity={0.8} isAnimationActive={false} radius={[2, 2, 0, 0]} stackId="a" />
-            <Bar dataKey="skipped" name="Saltados" fill={CHART_COLORS.red} fillOpacity={0.7} isAnimationActive={false} radius={[2, 2, 0, 0]} stackId="a" />
+            <YAxis tick={{ fontSize: 11, fill: tickColor }} stroke={gridColor} allowDecimals={false} />
+            <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(0,0,0,0.03)" }} />
+            <Bar dataKey="submitted" name="Enviados" fill={LAB10.purple} isAnimationActive={false} radius={[2, 2, 0, 0]} stackId="a" />
+            <Bar dataKey="skipped" name="Saltados" fill={LAB10.yellow} stroke="#c8cc3a" strokeWidth={0.5} isAnimationActive={false} radius={[2, 2, 0, 0]} stackId="a" />
           </BarChart>
         </ResponsiveContainer>
-        <div className="flex gap-4 justify-center mt-1 text-xs text-muted-foreground">
-          <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm inline-block bg-[#0079F2]" />Enviados</span>
-          <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm inline-block bg-[#f87171]" />Saltados</span>
+        <div className="flex gap-4 justify-center mt-1 text-xs text-gray-400">
+          <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm inline-block" style={{ backgroundColor: LAB10.purple }} />Enviados</span>
+          <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm inline-block border border-yellow-300" style={{ backgroundColor: LAB10.yellow }} />Saltados</span>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {discussionData.length > 0 && (
-          <div className="bg-card border border-card-border rounded-xl p-5 shadcn-card">
-            <h3 className="text-sm font-semibold text-foreground mb-4">Participación en Discusiones</h3>
+          <div className="bg-white border border-gray-100 rounded-xl p-5 shadow-sm">
+            <h3 className="text-sm font-semibold text-gray-900 mb-4">Participación en Discusiones</h3>
             <ResponsiveContainer width="100%" height={220} debounce={0}>
               <BarChart data={discussionData} margin={{ top: 0, right: 10, left: -20, bottom: 35 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
                 <XAxis
                   dataKey="name"
                   tick={{ fontSize: 10, fill: tickColor }}
-                  stroke={tickColor}
+                  stroke={gridColor}
                   angle={-35}
                   textAnchor="end"
                   interval={0}
                 />
-                <YAxis tick={{ fontSize: 11, fill: tickColor }} stroke={tickColor} allowDecimals={false} />
-                <Tooltip content={<CustomTooltip />} cursor={false} />
-                <Bar dataKey="hilos" name="Hilos" fill={CHART_COLORS.blue} fillOpacity={0.8} isAnimationActive={false} radius={[2, 2, 0, 0]} />
-                <Bar dataKey="respuestas" name="Respuestas" fill="#795EFF" fillOpacity={0.8} isAnimationActive={false} radius={[2, 2, 0, 0]} />
+                <YAxis tick={{ fontSize: 11, fill: tickColor }} stroke={gridColor} allowDecimals={false} />
+                <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(0,0,0,0.03)" }} />
+                <Bar dataKey="hilos" name="Hilos" fill={LAB10.black} isAnimationActive={false} radius={[2, 2, 0, 0]} />
+                <Bar dataKey="respuestas" name="Respuestas" fill={LAB10.purple} isAnimationActive={false} radius={[2, 2, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
+            <div className="flex gap-4 justify-center mt-1 text-xs text-gray-400">
+              <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm inline-block" style={{ backgroundColor: LAB10.black }} />Hilos</span>
+              <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm inline-block" style={{ backgroundColor: LAB10.purple }} />Respuestas</span>
+            </div>
           </div>
         )}
 
         {toolsData.length > 0 && (
-          <div className="bg-card border border-card-border rounded-xl p-5 shadcn-card">
-            <h3 className="text-sm font-semibold text-foreground mb-4">Herramientas Otorgadas vs Usadas</h3>
+          <div className="bg-white border border-gray-100 rounded-xl p-5 shadow-sm">
+            <h3 className="text-sm font-semibold text-gray-900 mb-4">Herramientas Otorgadas vs Usadas</h3>
             <ResponsiveContainer width="100%" height={220} debounce={0}>
               <BarChart data={toolsData} margin={{ top: 0, right: 10, left: -20, bottom: 35 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
                 <XAxis
                   dataKey="name"
                   tick={{ fontSize: 10, fill: tickColor }}
-                  stroke={tickColor}
+                  stroke={gridColor}
                   angle={-35}
                   textAnchor="end"
                   interval={0}
                 />
-                <YAxis tick={{ fontSize: 11, fill: tickColor }} stroke={tickColor} allowDecimals={false} />
-                <Tooltip content={<CustomTooltip />} cursor={false} />
-                <Bar dataKey="otorgadas" name="Otorgadas" fill={CHART_COLORS.blue} fillOpacity={0.5} isAnimationActive={false} radius={[2, 2, 0, 0]} />
-                <Bar dataKey="usadas" name="Usadas" fill={CHART_COLORS.green} fillOpacity={0.8} isAnimationActive={false} radius={[2, 2, 0, 0]} />
+                <YAxis tick={{ fontSize: 11, fill: tickColor }} stroke={gridColor} allowDecimals={false} />
+                <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(0,0,0,0.03)" }} />
+                <Bar dataKey="otorgadas" name="Otorgadas" fill={LAB10.light} stroke="#a0b0b0" strokeWidth={0.5} isAnimationActive={false} radius={[2, 2, 0, 0]} />
+                <Bar dataKey="usadas" name="Usadas" fill={LAB10.purple} isAnimationActive={false} radius={[2, 2, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
+            <div className="flex gap-4 justify-center mt-1 text-xs text-gray-400">
+              <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm inline-block border border-gray-300" style={{ backgroundColor: LAB10.light }} />Otorgadas</span>
+              <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm inline-block" style={{ backgroundColor: LAB10.purple }} />Usadas</span>
+            </div>
           </div>
         )}
 
         {discussionData.length === 0 && toolsData.length === 0 && (
-          <div className="col-span-2 text-muted-foreground text-sm p-4">
+          <div className="col-span-2 text-gray-400 text-sm p-4">
             Sin datos de discusiones o herramientas.
           </div>
         )}
