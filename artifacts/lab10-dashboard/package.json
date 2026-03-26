@@ -76,6 +76,7 @@
     "zod": "catalog:"
   },
   "dependencies": {
-    "papaparse": "^5.5.3"
+    "papaparse": "^5.5.3",
+    "react-router-dom": "^7.13.2"
   }
 }
