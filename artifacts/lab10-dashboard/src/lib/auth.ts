@@ -14,7 +14,7 @@ export const AUTHORIZED_EMAILS: Record<string, string[]> = {
   // "hr@mono.com": ["mono"],
 
   // ── Bacu ─────────────────────────────────────────────────────────────
-  // "hr@bacu.com": ["bacu"],
+  // add Bacu admin emails here, e.g.: "hr@baco.com.co": ["bacu"],
 };
 
 const SESSION_KEY = "lab10_auth_email";
