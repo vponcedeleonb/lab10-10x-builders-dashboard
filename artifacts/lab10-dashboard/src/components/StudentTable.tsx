@@ -3,9 +3,13 @@ import { formatDistanceToNow, parseISO } from "date-fns";
 import { es } from "date-fns/locale";
 import type { StudentWithMeta } from "@/lib/types";
 import { ChevronDown, ChevronUp, ChevronRight } from "lucide-react";
+import type { AggModule, ModuleEntry } from "@/lib/parseModules";
+import ModuleHeatmap from "./ModuleHeatmap";
 
 interface Props {
   students: StudentWithMeta[];
+  modulesByEmail?: Map<string, ModuleEntry[]>;
+  allModules?: AggModule[];
 }
 
 type SortKey = "display_name" | "completion_rate" | "avg_ai_score" | "days_since_last_submission";
@@ -32,7 +36,7 @@ function scoreColor(score: number) {
   return "text-[#4ade80]";
 }
 
-export default function StudentTable({ students }: Props) {
+export default function StudentTable({ students, modulesByEmail, allModules }: Props) {
   const [sortKey, setSortKey] = useState<SortKey>("display_name");
   const [sortDir, setSortDir] = useState<SortDir>("asc");
   const [search, setSearch] = useState("");
@@ -355,6 +359,18 @@ export default function StudentTable({ students }: Props) {
                                 </span>
                               ))}
                             </div>
+                          </div>
+                        )}
+                        {allModules && allModules.length > 0 && (
+                          <div className="col-span-full border-t border-border pt-3 mt-1">
+                            <p className="text-muted-foreground text-xs mb-2 font-medium uppercase tracking-wide">
+                              Progreso por Módulo
+                            </p>
+                            <ModuleHeatmap
+                              mode="individual"
+                              allModules={allModules}
+                              studentEntries={modulesByEmail?.get(s.email.toLowerCase()) ?? []}
+                            />
                           </div>
                         )}
                       </div>

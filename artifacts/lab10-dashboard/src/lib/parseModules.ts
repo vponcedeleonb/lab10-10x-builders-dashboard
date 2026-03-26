@@ -5,6 +5,19 @@ export interface ModuleStats {
   inProgressW3: number;
 }
 
+export interface ModuleEntry {
+  title: string;
+  week: number;
+  status: "completed" | "in_progress";
+}
+
+export interface AggModule {
+  title: string;
+  week: number;
+  completedCount: number;
+  inProgressCount: number;
+}
+
 const COMPANY_CSV_NAME: Record<string, string> = {
   bacu:    "Baco",
   mono:    "Mono",
@@ -13,38 +26,100 @@ const COMPANY_CSV_NAME: Record<string, string> = {
   truora:  "Truora",
 };
 
-export function computeModuleStats(
-  csvText: string,
-  companySlug: string
-): Map<string, ModuleStats> {
+function parseRows(csvText: string, companySlug: string) {
   const csvCompany = COMPANY_CSV_NAME[companySlug.toLowerCase()] ?? companySlug;
-
   const result = Papa.parse<Record<string, string>>(csvText, {
     header: true,
     skipEmptyLines: true,
     transformHeader: (h) => h.trim(),
   });
+  return result.data.filter(
+    (row) => (row.company ?? "").trim() === csvCompany
+  );
+}
 
+export function computeModuleStats(
+  csvText: string,
+  companySlug: string
+): Map<string, ModuleStats> {
+  const rows = parseRows(csvText, companySlug);
   const map = new Map<string, ModuleStats>();
 
-  for (const row of result.data) {
-    if ((row.company ?? "").trim() !== csvCompany) continue;
+  for (const row of rows) {
     const week = parseInt(row.week_number ?? "0", 10);
     if (week < 1 || week > 3) continue;
-
     const email = (row.email ?? "").trim().toLowerCase();
     if (!email) continue;
-
     if (!map.has(email)) map.set(email, { completedW3: 0, inProgressW3: 0 });
     const stats = map.get(email)!;
-
     const status = (row.module_status ?? "").trim().toLowerCase();
-    if (status === "completed") {
-      stats.completedW3 += 1;
-    } else if (status === "in_progress") {
-      stats.inProgressW3 += 1;
+    if (status === "completed") stats.completedW3 += 1;
+    else if (status === "in_progress") stats.inProgressW3 += 1;
+  }
+  return map;
+}
+
+export function computeStudentModules(
+  csvText: string,
+  companySlug: string
+): Map<string, ModuleEntry[]> {
+  const rows = parseRows(csvText, companySlug);
+  const map = new Map<string, ModuleEntry[]>();
+
+  for (const row of rows) {
+    const week = parseInt(row.week_number ?? "0", 10);
+    if (week < 1 || week > 3) continue;
+    const email = (row.email ?? "").trim().toLowerCase();
+    if (!email) continue;
+    const status = (row.module_status ?? "").trim().toLowerCase();
+    if (status !== "completed" && status !== "in_progress") continue;
+    if (!map.has(email)) map.set(email, []);
+    map.get(email)!.push({
+      title: (row.module_title ?? "").trim(),
+      week,
+      status: status as "completed" | "in_progress",
+    });
+  }
+  return map;
+}
+
+export function computeAggregateModules(
+  csvText: string,
+  companySlug: string
+): { modules: AggModule[]; totalStudents: number } {
+  const rows = parseRows(csvText, companySlug);
+  const students = new Set<string>();
+  const moduleMap = new Map<
+    string,
+    { week: number; title: string; completed: Set<string>; inProgress: Set<string> }
+  >();
+
+  for (const row of rows) {
+    const week = parseInt(row.week_number ?? "0", 10);
+    if (week < 1 || week > 3) continue;
+    const email = (row.email ?? "").trim().toLowerCase();
+    if (!email) continue;
+    students.add(email);
+    const title = (row.module_title ?? "").trim();
+    const key = `${week}::${title}`;
+    if (!moduleMap.has(key)) {
+      moduleMap.set(key, { week, title, completed: new Set(), inProgress: new Set() });
     }
+    const entry = moduleMap.get(key)!;
+    const status = (row.module_status ?? "").trim().toLowerCase();
+    if (status === "completed") entry.completed.add(email);
+    else if (status === "in_progress") entry.inProgress.add(email);
   }
 
-  return map;
+  const modules: AggModule[] = [];
+  for (const [, entry] of moduleMap) {
+    modules.push({
+      title: entry.title,
+      week: entry.week,
+      completedCount: entry.completed.size,
+      inProgressCount: entry.inProgress.size,
+    });
+  }
+  modules.sort((a, b) => a.week - b.week);
+  return { modules, totalStudents: students.size };
 }

@@ -25,7 +25,8 @@ import MONO_CSV from "@/data/mono.csv?raw";
 import SKALO_CSV from "@/data/skalo.csv?raw";
 import SKALO_PROJECTS_CSV from "@/data/skalo_projects.csv?raw";
 import MODULE_PROGRESS_CSV from "@/data/module_progress.csv?raw";
-import { computeModuleStats } from "@/lib/parseModules";
+import { computeModuleStats, computeStudentModules, computeAggregateModules } from "@/lib/parseModules";
+import ModuleHeatmap from "@/components/ModuleHeatmap";
 import lab10Logo from "@assets/Asset_12_1774543506448.png";
 
 const BASE_URL = import.meta.env.BASE_URL ?? "/";
@@ -79,6 +80,16 @@ export default function Dashboard({ company }: Props) {
   const handleSwitchCompany = () => {
     navigate("/select");
   };
+
+  const { modules: aggModules, totalStudents: aggTotal } = useMemo(
+    () => computeAggregateModules(MODULE_PROGRESS_CSV, company),
+    [company]
+  );
+
+  const studentModulesMap = useMemo(
+    () => computeStudentModules(MODULE_PROGRESS_CSV, company),
+    [company]
+  );
 
   const allStudents = students;
 
@@ -191,9 +202,25 @@ export default function Dashboard({ company }: Props) {
           <>
             <OverviewCards students={filteredStudents} />
             <TrackBar codeCount={codeCount} noCodeCount={noCodeCount} activeFilter={trackFilter} onFilter={setTrackFilter} />
+            {aggModules.length > 0 && (
+              <section>
+                <h2 className="text-base font-semibold text-gray-700 mb-3">Progreso por Módulo — Grupo</h2>
+                <div className="bg-white border border-gray-100 rounded-xl p-5 shadow-sm">
+                  <ModuleHeatmap
+                    mode="aggregate"
+                    allModules={aggModules}
+                    totalStudents={aggTotal}
+                  />
+                </div>
+              </section>
+            )}
             <AtRiskSection students={filteredStudents} />
             <section>
-              <StudentTable students={filteredStudents} />
+              <StudentTable
+                students={filteredStudents}
+                modulesByEmail={studentModulesMap}
+                allModules={aggModules}
+              />
             </section>
             <section>
               <h2 className="text-base font-semibold text-gray-700 mb-3">Distribución de Habilidades</h2>
