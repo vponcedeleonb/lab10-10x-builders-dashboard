@@ -81,9 +81,19 @@ export default function Dashboard({ company }: Props) {
     navigate("/select");
   };
 
-  const { modules: aggModules, totalStudents: aggTotal } = useMemo(
-    () => computeAggregateModules(MODULE_PROGRESS_CSV, company),
-    [company]
+  const emailTrackMap = useMemo(() => {
+    const map = new Map<string, "nocode" | "code">();
+    for (const s of students) {
+      const p = (s.learning_path ?? "").toLowerCase();
+      const isCode = p.includes("code") && !p.includes("no-code") && !p.includes("no code");
+      map.set(s.email.toLowerCase(), isCode ? "code" : "nocode");
+    }
+    return map;
+  }, [students]);
+
+  const { modules: aggModules, totalStudents: aggTotal, totalNoCode: aggNoCode, totalCode: aggCode } = useMemo(
+    () => computeAggregateModules(MODULE_PROGRESS_CSV, company, emailTrackMap),
+    [company, emailTrackMap]
   );
 
   const studentModulesMap = useMemo(
@@ -210,6 +220,9 @@ export default function Dashboard({ company }: Props) {
                     mode="aggregate"
                     allModules={aggModules}
                     totalStudents={aggTotal}
+                    totalNoCode={aggNoCode}
+                    totalCode={aggCode}
+                    trackFilter={trackFilter ?? "all"}
                   />
                 </div>
               </section>

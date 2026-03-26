@@ -16,6 +16,7 @@ export interface AggModule {
   week: number;
   completedCount: number;
   inProgressCount: number;
+  track: "nocode" | "code" | "both";
 }
 
 const COMPANY_CSV_NAME: Record<string, string> = {
@@ -85,13 +86,21 @@ export function computeStudentModules(
 
 export function computeAggregateModules(
   csvText: string,
-  companySlug: string
-): { modules: AggModule[]; totalStudents: number } {
+  companySlug: string,
+  emailTrackMap?: Map<string, "nocode" | "code">
+): { modules: AggModule[]; totalStudents: number; totalNoCode: number; totalCode: number } {
   const rows = parseRows(csvText, companySlug);
   const students = new Set<string>();
   const moduleMap = new Map<
     string,
-    { week: number; title: string; completed: Set<string>; inProgress: Set<string> }
+    {
+      week: number;
+      title: string;
+      completed: Set<string>;
+      inProgress: Set<string>;
+      noCodeStudents: Set<string>;
+      codeStudents: Set<string>;
+    }
   >();
 
   for (const row of rows) {
@@ -103,23 +112,51 @@ export function computeAggregateModules(
     const title = (row.module_title ?? "").trim();
     const key = `${week}::${title}`;
     if (!moduleMap.has(key)) {
-      moduleMap.set(key, { week, title, completed: new Set(), inProgress: new Set() });
+      moduleMap.set(key, {
+        week,
+        title,
+        completed: new Set(),
+        inProgress: new Set(),
+        noCodeStudents: new Set(),
+        codeStudents: new Set(),
+      });
     }
     const entry = moduleMap.get(key)!;
     const status = (row.module_status ?? "").trim().toLowerCase();
     if (status === "completed") entry.completed.add(email);
     else if (status === "in_progress") entry.inProgress.add(email);
+
+    const track = emailTrackMap?.get(email);
+    if (track === "code") entry.codeStudents.add(email);
+    else entry.noCodeStudents.add(email);
+  }
+
+  let totalNoCode = 0;
+  let totalCode = 0;
+  for (const email of students) {
+    const track = emailTrackMap?.get(email);
+    if (track === "code") totalCode++;
+    else totalNoCode++;
   }
 
   const modules: AggModule[] = [];
   for (const [, entry] of moduleMap) {
+    const hasNoCode = entry.noCodeStudents.size > 0;
+    const hasCode = entry.codeStudents.size > 0;
+    let track: "nocode" | "code" | "both" = "both";
+    if (emailTrackMap && emailTrackMap.size > 0) {
+      if (hasNoCode && hasCode) track = "both";
+      else if (hasCode) track = "code";
+      else track = "nocode";
+    }
     modules.push({
       title: entry.title,
       week: entry.week,
       completedCount: entry.completed.size,
       inProgressCount: entry.inProgress.size,
+      track,
     });
   }
-  modules.sort((a, b) => a.week - b.week);
-  return { modules, totalStudents: students.size };
+  modules.sort((a, b) => a.week - b.week || a.title.localeCompare(b.title));
+  return { modules, totalStudents: students.size, totalNoCode, totalCode };
 }
