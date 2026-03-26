@@ -2,8 +2,11 @@ import Papa from "papaparse";
 import { differenceInDays, parseISO } from "date-fns";
 import type { Student, StudentWithMeta, RiskReason } from "./types";
 
-const TOTAL_MODULES_NOCODE = 35;
-const TOTAL_MODULES_CODE = 34;
+// Modules released through end of week 3 (the current reference point)
+// No-Code: week1=12 + week2=14 + week3=10 = 36
+// Code:    week1=7  + week2=10 + week3=6  = 23
+const TOTAL_MODULES_NOCODE = 36;
+const TOTAL_MODULES_CODE = 23;
 
 const SKILL_CATEGORIES: { name: string; keywords: string[] }[] = [
   {
