@@ -1,0 +1,70 @@
+learning_path,week_number,sort_order,module_name,module_type,group_name,duration_minutes
+10x Builders: Code,1,1,"El Problema Real: El Síndrome del ""Copiloto Pasivo""",video,,250
+10x Builders: Code,1,2,Fundamentos: El Loop de Ingeniería Híbrida,video,,447
+10x Builders: Code,1,3,"El Arte del ""Technical Brief"" (Architecting)",video,,368
+10x Builders: Code,1,4,Planificación y Negociación (The Planner),video,,0
+10x Builders: Code,1,5,"Implementación y ""Lazy Iteration""",video,,0
+10x Builders: Code,1,6,Code Review Forense (Auditing),video,,0
+10x Builders: Code,1,7,Entregable de la Semana,video,,0
+10x Builders: Code,2,1,De Jugador Estrella a Director Técnico,video,Semana 2: Construyendo tu Sistema,4
+10x Builders: Code,2,2,"Los 4 Componentes: Reglas, Skills, MCPs, SubAgents",video,Semana 2: Construyendo tu Sistema,12
+10x Builders: Code,2,3,Skills en Práctica: TDD y Setup del Clon de Twitter,video,Semana 2: Construyendo tu Sistema,8
+10x Builders: Code,2,4,MCP: Concepto y Arquitectura,video,Semana 2: Construyendo tu Sistema,7
+10x Builders: Code,2,5,MCP en Práctica: Supabase Local + Skills,video,Semana 2: Construyendo tu Sistema,17
+10x Builders: Code,2,6,CLI como Alternativa a MCP,video,Semana 2: Construyendo tu Sistema,9
+10x Builders: Code,2,7,Configurar CLI: Agent Browser de Vercel,video,Semana 2: Construyendo tu Sistema,10
+10x Builders: Code,2,8,SubAgents: Contexto Fresco y Delegación,video,Semana 2: Construyendo tu Sistema,6
+10x Builders: Code,2,9,Creando nuestro Subagent de QA,video,Semana 2: Construyendo tu Sistema,13
+10x Builders: Code,2,10,Cazadores de Bugs,video,Semana 2: Construyendo tu Sistema,10
+10x Builders: Code,3,1,Arquitectura de IA: Agentes Autónomos vs Flujos de Trabajo,video,,8
+10x Builders: Code,3,2,¿Cómo funciona un Agente?,video,,8
+10x Builders: Code,3,3,Introducción a LangChain y Agentes de IA,video,,7
+10x Builders: Code,3,4,Implementación de Agentes Inteligentes con Langchain y TypeScript,video,,7
+10x Builders: Code,3,5,Barreras de Seguridad en Agentes de Inteligencia Artificial,video,,5
+10x Builders: Code,3,6,Entregable Final: Diseño e Implementación de Agentes,video,,2
+10x Builders: Code,4,1,"El Problema Real: El ""Agente Tonto"" que se pierde en el bosque",video,,0
+10x Builders: Code,5,1,El Problema Real: El Cerebro en la Cubeta,video,,0
+10x Builders: Code,6,1,El Problema Real: El Becario Genio con Amnesia,video,,0
+10x Builders: Code,7,1,"El Problema Real: La Trampa del ""Vibe Check""",video,,0
+10x Builders: Code,8,1,"El Problema Real: La Mentira de ""Funciona en mi Máquina""",video,,0
+10x Builders: No-Code,1,1,Bienvenido al programa,video,,4
+10x Builders: No-Code,1,2,Estado actual de AI,video,,35
+10x Builders: No-Code,1,3,LLM & Modelos,video,,14
+10x Builders: No-Code,1,4,Introducción a Markdown,video,,10
+10x Builders: No-Code,1,5,Técnicas de prompting,video,,8
+10x Builders: No-Code,1,6,Context engineering,video,,8
+10x Builders: No-Code,1,7,Bases de conocimiento,video,,5
+10x Builders: No-Code,1,8,Memoria,video,,12
+10x Builders: No-Code,1,9,Input > Proceso > Output,video,,8
+10x Builders: No-Code,1,10,Definición de problemas y flujos de solución,video,,50
+10x Builders: No-Code,1,11,AI en el día a día - Herramientas más allá de chats,video,,28
+10x Builders: No-Code,1,12,Ejercicio del proyecto: Arquitectura de tu solución,video,,3
+10x Builders: No-Code,2,1,Introducción a automatizaciones con n8n,video,,22
+10x Builders: No-Code,2,2,Condicionales,video,,6
+10x Builders: No-Code,2,3,Expresiones,video,,10
+10x Builders: No-Code,2,4,Credenciales,video,,3
+10x Builders: No-Code,2,5,JSON,video,,7
+10x Builders: No-Code,2,6,Loops,video,,5
+10x Builders: No-Code,2,7,Webhooks,video,,5
+10x Builders: No-Code,2,8,Evaluaciones en n8n,video,,11
+10x Builders: No-Code,2,9,Construyendo una automatización compleja,video,,24
+10x Builders: No-Code,2,10,Introducción a agentes,video,,31
+10x Builders: No-Code,2,11,RAG,video,,5
+10x Builders: No-Code,2,12,Human in the loop,video,,7
+10x Builders: No-Code,2,13,Structured output,video,,6
+10x Builders: No-Code,2,14,Construcción de un sistema completo con agentes,video,,29
+10x Builders: No-Code,3,1,Introducción a los Agentes de Código con IA,video,,7
+10x Builders: No-Code,3,2,Desarrollo Guiado por Especificaciones (Spec-Driven Development) con IA,video,,15
+10x Builders: No-Code,3,3,Desarrollo Full-Stack sin Código usando Lovable,video,,24
+10x Builders: No-Code,3,4,Desarrollo de Aplicaciones con Replit e IA,video,,14
+10x Builders: No-Code,3,5,Fundamentos del Sistema de Archivos (Filesystem),video,Semana 3,6
+10x Builders: No-Code,3,6,Introducción a la Terminal y Comandos Básicos,video,Semana 3,9
+10x Builders: No-Code,3,7,Localhost: Desarrollo Local,video,Semana 3,9
+10x Builders: No-Code,3,8,Despliegue de Aplicaciones Web,video,Semana 3,13
+10x Builders: No-Code,3,9,Dominando Cursor: Desarrollo con IA,video,,22
+10x Builders: No-Code,3,10,Árbol de Decisión para Elegir Herramientas de Desarrollo,video,,4
+10x Builders: No-Code,4,1,"Interfaz, UX y UI: qué significan y por qué importan para tus soluciones de AI",video,,0
+10x Builders: No-Code,5,0,De asistentes a agentes autónomos: el cambio de paradigma que está pasando ahora,video,,0
+10x Builders: No-Code,6,0,Cómo la IA transforma roles: el framework para identificar oportunidades en cualquier área,video,,0
+10x Builders: No-Code,7,0,"Diseñar evaluaciones para tu sistema: métricas, criterios y casos de prueba",video,,0
+10x Builders: No-Code,8,0,"Ambientes: desarrollo, staging y producción - de prototipo a producto real",video,,0

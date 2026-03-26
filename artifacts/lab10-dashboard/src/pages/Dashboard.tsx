@@ -25,6 +25,7 @@ import MONO_CSV from "@/data/mono.csv?raw";
 import SKALO_CSV from "@/data/skalo.csv?raw";
 import SKALO_PROJECTS_CSV from "@/data/skalo_projects.csv?raw";
 import MODULE_PROGRESS_CSV from "@/data/module_progress.csv?raw";
+import MODULES_CATALOG_CSV from "@/data/modules_catalog.csv?raw";
 import { computeModuleStats, computeStudentModules, computeAggregateModules } from "@/lib/parseModules";
 import ModuleHeatmap, { type StudentInfo } from "@/components/ModuleHeatmap";
 import lab10Logo from "@assets/Asset_12_1774543506448.png";
@@ -92,7 +93,7 @@ export default function Dashboard({ company }: Props) {
   }, [students]);
 
   const { modules: aggModules, totalStudents: aggTotal, totalNoCode: aggNoCode, totalCode: aggCode } = useMemo(
-    () => computeAggregateModules(MODULE_PROGRESS_CSV, company, emailTrackMap),
+    () => computeAggregateModules(MODULE_PROGRESS_CSV, company, emailTrackMap, MODULES_CATALOG_CSV),
     [company, emailTrackMap]
   );
 

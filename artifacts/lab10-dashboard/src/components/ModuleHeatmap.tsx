@@ -360,8 +360,8 @@ export default function ModuleHeatmap(props: Props) {
 
   const showBothTracks = !trackFilter || trackFilter === "all";
 
-  const noCodeModules = allModules.filter((m) => m.track === "nocode" || m.track === "both");
-  const codeModules = allModules.filter((m) => m.track === "code" || m.track === "both");
+  const noCodeModules = allModules.filter((m) => m.track === "nocode");
+  const codeModules = allModules.filter((m) => m.track === "code");
   const filteredSingleTrack = trackFilter === "code" ? codeModules : noCodeModules;
 
   function handleDotClick(m: AggModule, totalForTrack: number) {

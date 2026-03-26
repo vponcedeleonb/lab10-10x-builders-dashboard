@@ -14,9 +14,10 @@ export interface ModuleEntry {
 export interface AggModule {
   title: string;
   week: number;
+  sortOrder: number;
   completedCount: number;
   inProgressCount: number;
-  track: "nocode" | "code" | "both";
+  track: "nocode" | "code";
   completedEmails: string[];
   inProgressEmails: string[];
 }
@@ -86,23 +87,43 @@ export function computeStudentModules(
   return map;
 }
 
+interface CatalogModule {
+  track: "nocode" | "code";
+  week: number;
+  sortOrder: number;
+  title: string;
+}
+
+export function parseCatalog(catalogCsv: string): CatalogModule[] {
+  const result = Papa.parse<Record<string, string>>(catalogCsv, {
+    header: true,
+    skipEmptyLines: true,
+    transformHeader: (h) => h.trim(),
+  });
+  return result.data
+    .map((row) => {
+      const week = parseInt(row.week_number ?? "0", 10);
+      const sort = parseInt(row.sort_order ?? "0", 10);
+      const lp = (row.learning_path ?? "").trim();
+      const title = (row.module_name ?? "").trim();
+      const track: "nocode" | "code" = lp.includes("No-Code") ? "nocode" : "code";
+      return { track, week, sortOrder: sort, title };
+    })
+    .filter((m) => m.week >= 1 && m.week <= 3 && m.title);
+}
+
 export function computeAggregateModules(
-  csvText: string,
+  activityCsv: string,
   companySlug: string,
-  emailTrackMap?: Map<string, "nocode" | "code">
+  emailTrackMap?: Map<string, "nocode" | "code">,
+  catalogCsv?: string
 ): { modules: AggModule[]; totalStudents: number; totalNoCode: number; totalCode: number } {
-  const rows = parseRows(csvText, companySlug);
+  const rows = parseRows(activityCsv, companySlug);
+
   const students = new Set<string>();
-  const moduleMap = new Map<
+  const activityMap = new Map<
     string,
-    {
-      week: number;
-      title: string;
-      completed: Set<string>;
-      inProgress: Set<string>;
-      noCodeStudents: Set<string>;
-      codeStudents: Set<string>;
-    }
+    { completed: Set<string>; inProgress: Set<string> }
   >();
 
   for (const row of rows) {
@@ -113,24 +134,13 @@ export function computeAggregateModules(
     students.add(email);
     const title = (row.module_title ?? "").trim();
     const key = `${week}::${title}`;
-    if (!moduleMap.has(key)) {
-      moduleMap.set(key, {
-        week,
-        title,
-        completed: new Set(),
-        inProgress: new Set(),
-        noCodeStudents: new Set(),
-        codeStudents: new Set(),
-      });
+    if (!activityMap.has(key)) {
+      activityMap.set(key, { completed: new Set(), inProgress: new Set() });
     }
-    const entry = moduleMap.get(key)!;
+    const entry = activityMap.get(key)!;
     const status = (row.module_status ?? "").trim().toLowerCase();
     if (status === "completed") entry.completed.add(email);
     else if (status === "in_progress") entry.inProgress.add(email);
-
-    const track = emailTrackMap?.get(email);
-    if (track === "code") entry.codeStudents.add(email);
-    else entry.noCodeStudents.add(email);
   }
 
   let totalNoCode = 0;
@@ -141,26 +151,43 @@ export function computeAggregateModules(
     else totalNoCode++;
   }
 
-  const modules: AggModule[] = [];
-  for (const [, entry] of moduleMap) {
-    const hasNoCode = entry.noCodeStudents.size > 0;
-    const hasCode = entry.codeStudents.size > 0;
-    let track: "nocode" | "code" | "both" = "both";
-    if (emailTrackMap && emailTrackMap.size > 0) {
-      if (hasNoCode && hasCode) track = "both";
-      else if (hasCode) track = "code";
-      else track = "nocode";
-    }
-    modules.push({
-      title: entry.title,
-      week: entry.week,
-      completedCount: entry.completed.size,
-      inProgressCount: entry.inProgress.size,
-      track,
-      completedEmails: [...entry.completed],
-      inProgressEmails: [...entry.inProgress],
-    });
+  let catalogModules: CatalogModule[] = [];
+  if (catalogCsv) {
+    catalogModules = parseCatalog(catalogCsv);
   }
-  modules.sort((a, b) => a.week - b.week || a.title.localeCompare(b.title));
+
+  const modules: AggModule[] = catalogModules.map((cat) => {
+    const key = `${cat.week}::${cat.title}`;
+    const activity = activityMap.get(key);
+    return {
+      title: cat.title,
+      week: cat.week,
+      sortOrder: cat.sortOrder,
+      track: cat.track,
+      completedCount: activity?.completed.size ?? 0,
+      inProgressCount: activity?.inProgress.size ?? 0,
+      completedEmails: activity ? [...activity.completed] : [],
+      inProgressEmails: activity ? [...activity.inProgress] : [],
+    };
+  });
+
+  if (modules.length === 0) {
+    for (const [key, activity] of activityMap) {
+      const [weekStr, title] = key.split("::");
+      const week = parseInt(weekStr, 10);
+      modules.push({
+        title,
+        week,
+        sortOrder: 0,
+        track: "nocode",
+        completedCount: activity.completed.size,
+        inProgressCount: activity.inProgress.size,
+        completedEmails: [...activity.completed],
+        inProgressEmails: [...activity.inProgress],
+      });
+    }
+  }
+
+  modules.sort((a, b) => a.week - b.week || a.sortOrder - b.sortOrder || a.title.localeCompare(b.title));
   return { modules, totalStudents: students.size, totalNoCode, totalCode };
 }
