@@ -8,7 +8,9 @@ export const AUTHORIZED_EMAILS: Record<string, string[]> = {
   "kgarrido@truora.com": ["truora"],
 
   // ── LAB10 (all companies) ────────────────────────────────────────────
-  "valentina@lab10.ai": ["tributi", "truora", "mono", "bacu"],
+  "valentina@lab10.ai": ["tributi", "truora", "mono", "bacu", "skalo"],
+  "juanse@lab10.ai":    ["tributi", "truora", "mono", "bacu", "skalo"],
+  "oscar@lab10.ai":     ["tributi", "truora", "mono", "bacu", "skalo"],
 
   // ── Mono ─────────────────────────────────────────────────────────────
   "arivera@mono.la": ["mono"],
@@ -16,6 +18,9 @@ export const AUTHORIZED_EMAILS: Record<string, string[]> = {
   // ── Bacu ─────────────────────────────────────────────────────────────
   "juliana.saavedra@bacu.co": ["bacu"],
   "stephanie@bacu.co": ["bacu"],
+
+  // ── Skalo ────────────────────────────────────────────────────────────
+  "luisa.velez@skalo.co": ["skalo"],
 };
 
 const SESSION_KEY = "lab10_auth_email";

@@ -38,6 +38,7 @@ function App() {
           <Route path="/truora"  element={<ProtectedRoute company="truora" />} />
           <Route path="/mono"    element={<ProtectedRoute company="mono" />} />
           <Route path="/bacu"    element={<ProtectedRoute company="bacu" />} />
+          <Route path="/skalo"   element={<ProtectedRoute company="skalo" />} />
           <Route path="*"        element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>

@@ -32,6 +32,7 @@ const COMPANY_LABELS: Record<string, string> = {
   truora:  "Truora",
   mono:    "Mono",
   bacu:    "Bacu",
+  skalo:   "Skalo",
 };
 
 interface Props {
