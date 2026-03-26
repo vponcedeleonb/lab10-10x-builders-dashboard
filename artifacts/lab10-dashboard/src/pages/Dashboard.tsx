@@ -87,7 +87,8 @@ export default function Dashboard({ company }: Props) {
   const displayName = COMPANY_LABELS[company] ?? company;
 
   // Placeholder for companies without data yet
-  if (company !== "tributi" && !loading) {
+  const COMPANIES_WITH_DATA = ["tributi", "truora"];
+  if (!COMPANIES_WITH_DATA.includes(company) && !loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex flex-col">
         <header className="bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between">
