@@ -4,6 +4,7 @@ import {
 } from "recharts";
 import type { StudentWithMeta } from "@/lib/types";
 import StudentPopup from "./StudentPopup";
+import ChartInfo from "./ChartInfo";
 
 const LAB10 = {
   yellow:   "#EDF25F",
@@ -88,10 +89,10 @@ export default function EngagementSection({ students }: Props) {
     <>
       <div className="space-y-4">
         <div className="bg-white border border-gray-100 rounded-xl p-5 shadow-sm">
-          <h3 className="text-sm font-semibold text-gray-900 mb-1">
+          <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center">
             Checkpoints por Estudiante (enviados vs saltados)
+            <ChartInfo text="Compara cuántos checkpoints envió cada estudiante (morado) versus cuántos omitió (amarillo). Un alto número de checkpoints saltados puede ser señal de desconexión o riesgo. Haz clic en una barra para ver el perfil del estudiante." />
           </h3>
-          <p className="text-[11px] text-gray-400 mb-3">Clic en una barra para ver los detalles del estudiante</p>
           <ResponsiveContainer width="100%" height={260} debounce={0}>
             <BarChart data={checkpointData} margin={{ top: 0, right: 10, left: -20, bottom: 40 }}>
               <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
@@ -138,8 +139,10 @@ export default function EngagementSection({ students }: Props) {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {discussionData.length > 0 && (
             <div className="bg-white border border-gray-100 rounded-xl p-5 shadow-sm">
-              <h3 className="text-sm font-semibold text-gray-900 mb-1">Participación en Discusiones</h3>
-              <p className="text-[11px] text-gray-400 mb-3">Clic en una barra para ver detalles</p>
+              <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center">
+                Participación en Discusiones
+                <ChartInfo text="Muestra los hilos iniciados y respuestas dadas por cada estudiante en el foro del programa. Mayor participación suele correlacionar con mejor desempeño. Haz clic en una barra para ver el perfil del estudiante." />
+              </h3>
               <ResponsiveContainer width="100%" height={220} debounce={0}>
                 <BarChart data={discussionData} margin={{ top: 0, right: 10, left: -20, bottom: 35 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
@@ -166,8 +169,10 @@ export default function EngagementSection({ students }: Props) {
 
           {toolsData.length > 0 && (
             <div className="bg-white border border-gray-100 rounded-xl p-5 shadow-sm">
-              <h3 className="text-sm font-semibold text-gray-900 mb-1">Herramientas Otorgadas vs Usadas</h3>
-              <p className="text-[11px] text-gray-400 mb-3">Clic en una barra para ver detalles</p>
+              <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center">
+                Herramientas Otorgadas vs Usadas
+                <ChartInfo text="Herramientas de AI disponibles (gris) versus las que cada estudiante efectivamente activó (morado). Una brecha grande puede indicar que el estudiante no está explorando todas las herramientas del programa. Haz clic en una barra para ver el perfil." />
+              </h3>
               <ResponsiveContainer width="100%" height={220} debounce={0}>
                 <BarChart data={toolsData} margin={{ top: 0, right: 10, left: -20, bottom: 35 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />

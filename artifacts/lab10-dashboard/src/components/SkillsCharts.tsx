@@ -4,6 +4,7 @@ import {
 } from "recharts";
 import type { StudentWithMeta } from "@/lib/types";
 import StudentPopup from "./StudentPopup";
+import ChartInfo from "./ChartInfo";
 
 const LAB10 = {
   yellow:   "#EDF25F",
@@ -82,8 +83,10 @@ export default function SkillsCharts({ students }: Props) {
     <>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className="bg-white border border-gray-100 rounded-xl p-5 shadow-sm">
-          <h3 className="text-sm font-semibold text-gray-900 mb-1">Distribución de Nivel Base</h3>
-          <p className="text-[11px] text-gray-400 mb-3">Clic en una barra para ver los estudiantes</p>
+          <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center">
+            Distribución de Nivel Base
+            <ChartInfo text="Muestra cuántos estudiantes hay en cada nivel según su evaluación diagnóstica inicial. Haz clic en una barra para ver qué estudiantes pertenecen a ese nivel." />
+          </h3>
           <ResponsiveContainer width="100%" height={200} debounce={0}>
             <BarChart data={levelData} margin={{ top: 0, right: 10, left: -20, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
@@ -115,8 +118,10 @@ export default function SkillsCharts({ students }: Props) {
         </div>
 
         <div className="bg-white border border-gray-100 rounded-xl p-5 shadow-sm">
-          <h3 className="text-sm font-semibold text-gray-900 mb-1">Baseline vs. Puntaje AI Actual</h3>
-          <p className="text-[11px] text-gray-400 mb-3">Clic en un punto para ver los detalles del estudiante</p>
+          <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center">
+            Baseline vs. Puntaje AI Actual
+            <ChartInfo text="Cada punto representa un estudiante. El eje X es su puntaje en la evaluación inicial (baseline) y el eje Y es su promedio actual en checkpoints calificados por AI. Haz clic en un punto para ver los detalles del estudiante." />
+          </h3>
           <ResponsiveContainer width="100%" height={220} debounce={0}>
             <ScatterChart margin={{ top: 0, right: 10, left: -20, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
@@ -181,8 +186,10 @@ export default function SkillsCharts({ students }: Props) {
         </div>
 
         <div className="bg-white border border-gray-100 rounded-xl p-5 shadow-sm">
-          <h3 className="text-sm font-semibold text-gray-900 mb-1">Principales Fortalezas</h3>
-          <p className="text-[11px] text-gray-400 mb-3">Clic en una barra para ver los estudiantes</p>
+          <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center">
+            Principales Fortalezas
+            <ChartInfo text="Categorías del currículo LAB10 donde los estudiantes muestran mejor rendimiento, calculadas a partir de sus resultados en checkpoints. Haz clic en una barra para ver qué estudiantes tienen esa fortaleza." />
+          </h3>
           {topStrengths.length > 0 ? (
             <ResponsiveContainer width="100%" height={260} debounce={0}>
               <BarChart data={topStrengths} layout="vertical" margin={{ top: 0, right: 20, left: 10, bottom: 0 }}>
@@ -210,8 +217,10 @@ export default function SkillsCharts({ students }: Props) {
         </div>
 
         <div className="bg-white border border-gray-100 rounded-xl p-5 shadow-sm">
-          <h3 className="text-sm font-semibold text-gray-900 mb-1">Principales Áreas de Mejora</h3>
-          <p className="text-[11px] text-gray-400 mb-3">Clic en una barra para ver los estudiantes</p>
+          <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center">
+            Principales Áreas de Mejora
+            <ChartInfo text="Categorías del currículo donde los estudiantes presentan mayor brecha de aprendizaje, basadas en checkpoints con bajo rendimiento. Haz clic en una barra para ver los estudiantes con esa área de mejora." />
+          </h3>
           {topGaps.length > 0 ? (
             <ResponsiveContainer width="100%" height={260} debounce={0}>
               <BarChart data={topGaps} layout="vertical" margin={{ top: 0, right: 20, left: 10, bottom: 0 }}>
