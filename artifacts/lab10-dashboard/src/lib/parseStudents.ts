@@ -1,6 +1,7 @@
 import Papa from "papaparse";
 import { differenceInDays, parseISO } from "date-fns";
 import type { Student, StudentWithMeta, RiskReason } from "./types";
+import type { ModuleStats } from "./parseModules";
 
 // Modules released through end of week 3 (the current reference point)
 // No-Code: week1=12 + week2=14 + week3=10 = 36
@@ -76,7 +77,7 @@ function parseBool(val: unknown): boolean {
   return s === "true" || s === "1" || s === "yes";
 }
 
-export function enrichStudent(raw: Record<string, string>): StudentWithMeta {
+export function enrichStudent(raw: Record<string, string>, moduleOverride?: ModuleStats): StudentWithMeta {
   const s: Student = {
     display_name: raw.display_name ?? "",
     email: raw.email ?? "",
@@ -116,6 +117,12 @@ export function enrichStudent(raw: Record<string, string>): StudentWithMeta {
     discussion_replies: parseNum(raw.replies_posted ?? raw.discussion_replies),
     discussion_votes: parseNum(raw.votes_given ?? raw.discussion_votes),
   };
+
+  // Override module counts with granular data if available
+  if (moduleOverride) {
+    s.modules_completed  = moduleOverride.completedW3;
+    s.modules_in_progress = moduleOverride.inProgressW3;
+  }
 
   const pathLower = (s.learning_path ?? "").toLowerCase().trim();
   const isCode = pathLower.includes("code") && !pathLower.includes("no-code") && !pathLower.includes("no code");
@@ -179,11 +186,18 @@ export function enrichStudent(raw: Record<string, string>): StudentWithMeta {
   };
 }
 
-export function parseCSV(csvText: string): StudentWithMeta[] {
+export function parseCSV(
+  csvText: string,
+  moduleMap?: Map<string, ModuleStats>
+): StudentWithMeta[] {
   const result = Papa.parse<Record<string, string>>(csvText, {
     header: true,
     skipEmptyLines: true,
     transformHeader: (h) => h.trim(),
   });
-  return result.data.map(enrichStudent);
+  return result.data.map((row) => {
+    const email = (row.email ?? "").trim().toLowerCase();
+    const override = moduleMap?.get(email);
+    return enrichStudent(row, override);
+  });
 }

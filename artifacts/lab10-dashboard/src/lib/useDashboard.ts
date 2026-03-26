@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import type { StudentWithMeta } from "./types";
 import { parseCSV } from "./parseStudents";
+import type { ModuleStats } from "./parseModules";
 
 export function useDashboard() {
   const [students, setStudents] = useState<StudentWithMeta[]>([]);
@@ -8,10 +9,10 @@ export function useDashboard() {
   const [loaded, setLoaded] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const loadCSV = useCallback((text: string, name?: string) => {
+  const loadCSV = useCallback((text: string, name?: string, moduleMap?: Map<string, ModuleStats>) => {
     setLoading(true);
     try {
-      const parsed = parseCSV(text);
+      const parsed = parseCSV(text, moduleMap);
       setStudents(parsed);
       if (name) setCompanyName(name);
       setLoaded(true);

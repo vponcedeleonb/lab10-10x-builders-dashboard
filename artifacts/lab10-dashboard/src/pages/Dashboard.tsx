@@ -24,6 +24,8 @@ import BACU_PROJECTS_CSV from "@/data/bacu_projects.csv?raw";
 import MONO_CSV from "@/data/mono.csv?raw";
 import SKALO_CSV from "@/data/skalo.csv?raw";
 import SKALO_PROJECTS_CSV from "@/data/skalo_projects.csv?raw";
+import MODULE_PROGRESS_CSV from "@/data/module_progress.csv?raw";
+import { computeModuleStats } from "@/lib/parseModules";
 import lab10Logo from "@assets/Asset_12_1774543506448.png";
 
 const BASE_URL = import.meta.env.BASE_URL ?? "/";
@@ -48,20 +50,21 @@ export default function Dashboard({ company }: Props) {
   const [projects, setProjects] = useState<ProjectData[]>([]);
 
   useEffect(() => {
+    const mods = computeModuleStats(MODULE_PROGRESS_CSV, company);
     if (company === "tributi") {
-      loadCSV(TRIBUTI_CSV, "Tributi");
+      loadCSV(TRIBUTI_CSV, "Tributi", mods);
       setProjects(parseProjectsCSV(TRIBUTI_PROJECTS_CSV));
     } else if (company === "truora") {
-      loadCSV(TRUORA_CSV, "Truora");
+      loadCSV(TRUORA_CSV, "Truora", mods);
       setProjects(parseProjectsCSV(TRUORA_PROJECTS_CSV));
     } else if (company === "bacu") {
-      loadCSV(BACU_CSV, "Bacu");
+      loadCSV(BACU_CSV, "Bacu", mods);
       setProjects(parseProjectsCSV(BACU_PROJECTS_CSV));
     } else if (company === "mono") {
-      loadCSV(MONO_CSV, "Mono");
+      loadCSV(MONO_CSV, "Mono", mods);
       setProjects([]);
     } else if (company === "skalo") {
-      loadCSV(SKALO_CSV, "Skalo");
+      loadCSV(SKALO_CSV, "Skalo", mods);
       setProjects(parseProjectsCSV(SKALO_PROJECTS_CSV));
     }
   }, [company]);
