@@ -16,6 +16,7 @@ import { parseProjectsCSV, type ProjectData } from "@/lib/parseProjects";
 
 import TRIBUTI_CSV from "@/data/tributi.csv?raw";
 import TRIBUTI_PROJECTS_CSV from "@/data/tributi_projects.csv?raw";
+import lab10Logo from "@assets/Asset_12_1774543506448.png";
 
 const BASE_URL = import.meta.env.BASE_URL ?? "/";
 const API_BASE = BASE_URL.endsWith("/") ? BASE_URL : BASE_URL + "/";
@@ -58,11 +59,13 @@ export default function Dashboard() {
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 py-6 space-y-5">
         <header className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <div className="w-10 h-10 rounded-xl bg-[#EDF25F] flex items-center justify-center shrink-0 shadow-sm">
-              <span className="font-black text-gray-900 text-xs" style={{ fontFamily: "'PT Mono', monospace" }}>L10</span>
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">
+            <img
+              src={lab10Logo}
+              alt="LAB10"
+              className="h-9 w-auto shrink-0"
+            />
+            <div className="border-l border-gray-200 pl-4">
+              <h1 className="text-xl font-bold text-gray-900">
                 10x Builders <span className="text-gray-400 font-medium">{companyName}</span>
               </h1>
               <p className="text-xs text-gray-400 mt-0.5">
