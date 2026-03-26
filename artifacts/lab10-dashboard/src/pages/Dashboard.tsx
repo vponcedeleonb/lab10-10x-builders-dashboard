@@ -22,6 +22,8 @@ import TRUORA_PROJECTS_CSV from "@/data/truora_projects.csv?raw";
 import BACU_CSV from "@/data/bacu.csv?raw";
 import BACU_PROJECTS_CSV from "@/data/bacu_projects.csv?raw";
 import MONO_CSV from "@/data/mono.csv?raw";
+import SKALO_CSV from "@/data/skalo.csv?raw";
+import SKALO_PROJECTS_CSV from "@/data/skalo_projects.csv?raw";
 import lab10Logo from "@assets/Asset_12_1774543506448.png";
 
 const BASE_URL = import.meta.env.BASE_URL ?? "/";
@@ -58,6 +60,9 @@ export default function Dashboard({ company }: Props) {
     } else if (company === "mono") {
       loadCSV(MONO_CSV, "Mono");
       setProjects([]);
+    } else if (company === "skalo") {
+      loadCSV(SKALO_CSV, "Skalo");
+      setProjects(parseProjectsCSV(SKALO_PROJECTS_CSV));
     }
   }, [company]);
 
@@ -96,7 +101,7 @@ export default function Dashboard({ company }: Props) {
   const displayName = COMPANY_LABELS[company] ?? company;
 
   // Placeholder for companies without data yet
-  const COMPANIES_WITH_DATA = ["tributi", "truora", "bacu", "mono"];
+  const COMPANIES_WITH_DATA = ["tributi", "truora", "bacu", "mono", "skalo"];
   if (!COMPANIES_WITH_DATA.includes(company) && !loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex flex-col">
