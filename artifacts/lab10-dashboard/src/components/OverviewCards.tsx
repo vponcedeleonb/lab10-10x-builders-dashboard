@@ -22,64 +22,50 @@ export default function OverviewCards({ students }: Props) {
 
   const atRiskCount = students.filter((s) => s.is_at_risk).length;
 
-  const codeCount = enrolled.filter(
-    (s) =>
-      s.learning_path?.toLowerCase().includes("code") &&
-      !s.learning_path?.toLowerCase().includes("no-code") &&
-      !s.learning_path?.toLowerCase().includes("no code")
-  ).length;
-  const noCodeCount = enrolled.length - codeCount;
-
   const cards = [
     {
       label: "Matriculados",
       value: `${totalEnrolled} / ${totalRegistered}`,
       sub: "activos vs registrados",
-      color: "#EDF25F",
+      valueColor: "#1e3a5f",
     },
     {
       label: "Completación Promedio",
       value: `${(avgCompletion * 100).toFixed(1)}%`,
       sub: "módulos completados / total",
-      color: "#EDF25F",
+      valueColor: "#1e3a5f",
     },
     {
       label: "Puntaje AI Promedio",
       value: avgAiScore > 0 ? avgAiScore.toFixed(1) : "—",
       sub: "en checkpoints calificados por AI",
-      color: avgAiScore >= 85 ? "#4ade80" : avgAiScore >= 75 ? "#facc15" : "#f87171",
+      valueColor: avgAiScore >= 85 ? "#15803d" : avgAiScore >= 75 ? "#b45309" : "#dc2626",
     },
     {
       label: "En Riesgo",
       value: String(atRiskCount),
       sub: "estudiantes requieren atención",
-      color: atRiskCount > 0 ? "#f87171" : "#4ade80",
-    },
-    {
-      label: "Distribución de Tracks",
-      value: `${codeCount} Code`,
-      sub: `${noCodeCount} No-Code`,
-      color: "#818cf8",
+      valueColor: atRiskCount > 0 ? "#dc2626" : "#15803d",
     },
   ];
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
       {cards.map((card) => (
         <div
           key={card.label}
-          className="bg-card border border-card-border rounded-xl p-5 flex flex-col gap-1 shadcn-card"
+          className="bg-white border border-gray-100 rounded-xl p-5 flex flex-col gap-1 shadow-sm"
         >
-          <span className="text-xs text-muted-foreground uppercase tracking-wider font-medium">
+          <span className="text-[10px] text-gray-400 uppercase tracking-wider font-semibold" style={{ fontFamily: "'PT Mono', monospace" }}>
             {card.label}
           </span>
           <span
-            className="text-3xl font-bold tabular-nums"
-            style={{ color: card.color }}
+            className="text-3xl font-bold tabular-nums mt-1"
+            style={{ color: card.valueColor, fontFamily: "'PT Mono', monospace" }}
           >
             {card.value}
           </span>
-          <span className="text-xs text-muted-foreground">{card.sub}</span>
+          <span className="text-xs text-gray-400 mt-0.5">{card.sub}</span>
         </div>
       ))}
     </div>
