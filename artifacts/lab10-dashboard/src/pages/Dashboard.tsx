@@ -98,8 +98,8 @@ export default function Dashboard({ company }: Props) {
   );
 
   const studentModulesMap = useMemo(
-    () => computeStudentModules(MODULE_PROGRESS_CSV, company),
-    [company]
+    () => computeStudentModules(MODULE_PROGRESS_CSV, company, emailTrackMap, MODULES_CATALOG_CSV),
+    [company, emailTrackMap]
   );
 
   const studentInfoMap = useMemo<Map<string, StudentInfo>>(() => {
@@ -113,7 +113,21 @@ export default function Dashboard({ company }: Props) {
     return map;
   }, [students]);
 
-  const allStudents = students;
+  const correctedStudents = useMemo(() => {
+    if (!emailTrackMap.size || !studentModulesMap.size) return students;
+    return students.map((s) => {
+      const entries = studentModulesMap.get(s.email.toLowerCase()) ?? [];
+      const completed = entries.filter((e) => e.status === "completed").length;
+      const inProgress = entries.filter((e) => e.status === "in_progress").length;
+      const pathLower = (s.learning_path ?? "").toLowerCase();
+      const isCode = pathLower.includes("code") && !pathLower.includes("no-code") && !pathLower.includes("no code");
+      const total = isCode ? 23 : 36;
+      const completion_rate = total > 0 ? Math.round((completed / total) * 100) : 0;
+      return { ...s, modules_completed: completed, modules_in_progress: inProgress, completion_rate };
+    });
+  }, [students, emailTrackMap, studentModulesMap]);
+
+  const allStudents = correctedStudents;
 
   const codeCount = allStudents.filter((s) => {
     const p = (s.learning_path ?? "").toLowerCase();

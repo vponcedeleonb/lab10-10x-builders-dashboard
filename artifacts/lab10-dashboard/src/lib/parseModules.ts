@@ -63,11 +63,21 @@ export function computeModuleStats(
   return map;
 }
 
+export function buildModuleTrackMap(catalogCsv: string): Map<string, "nocode" | "code"> {
+  const catalog = parseCatalog(catalogCsv);
+  const map = new Map<string, "nocode" | "code">();
+  for (const m of catalog) map.set(m.title, m.track);
+  return map;
+}
+
 export function computeStudentModules(
   csvText: string,
-  companySlug: string
+  companySlug: string,
+  emailTrackMap?: Map<string, "nocode" | "code">,
+  catalogCsv?: string
 ): Map<string, ModuleEntry[]> {
   const rows = parseRows(csvText, companySlug);
+  const moduleTrackMap = catalogCsv ? buildModuleTrackMap(catalogCsv) : null;
   const map = new Map<string, ModuleEntry[]>();
 
   for (const row of rows) {
@@ -77,12 +87,16 @@ export function computeStudentModules(
     if (!email) continue;
     const status = (row.module_status ?? "").trim().toLowerCase();
     if (status !== "completed" && status !== "in_progress") continue;
+    const title = (row.module_title ?? "").trim();
+
+    if (moduleTrackMap && emailTrackMap) {
+      const studentTrack = emailTrackMap.get(email);
+      const moduleTrack = moduleTrackMap.get(title);
+      if (studentTrack && moduleTrack && studentTrack !== moduleTrack) continue;
+    }
+
     if (!map.has(email)) map.set(email, []);
-    map.get(email)!.push({
-      title: (row.module_title ?? "").trim(),
-      week,
-      status: status as "completed" | "in_progress",
-    });
+    map.get(email)!.push({ title, week, status: status as "completed" | "in_progress" });
   }
   return map;
 }
@@ -119,6 +133,7 @@ export function computeAggregateModules(
   catalogCsv?: string
 ): { modules: AggModule[]; totalStudents: number; totalNoCode: number; totalCode: number } {
   const rows = parseRows(activityCsv, companySlug);
+  const moduleTrackMap = catalogCsv ? buildModuleTrackMap(catalogCsv) : null;
 
   const students = new Set<string>();
   const activityMap = new Map<
@@ -131,8 +146,15 @@ export function computeAggregateModules(
     if (week < 1 || week > 3) continue;
     const email = (row.email ?? "").trim().toLowerCase();
     if (!email) continue;
-    students.add(email);
     const title = (row.module_title ?? "").trim();
+
+    if (moduleTrackMap && emailTrackMap) {
+      const studentTrack = emailTrackMap.get(email);
+      const moduleTrack = moduleTrackMap.get(title);
+      if (studentTrack && moduleTrack && studentTrack !== moduleTrack) continue;
+    }
+
+    students.add(email);
     const key = `${week}::${title}`;
     if (!activityMap.has(key)) {
       activityMap.set(key, { completed: new Set(), inProgress: new Set() });
