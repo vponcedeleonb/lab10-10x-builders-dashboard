@@ -28,4 +28,3 @@ timeoutMs = 20000
 [userenv]
 
 [userenv.shared]
-SUPABASE_URL = "https://swobfcrfdcwbkqsmmjoj.supabase.co"
