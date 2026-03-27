@@ -12,18 +12,11 @@ import EngagementSection from "@/components/EngagementSection";
 import ProjectsGrid from "@/components/ProjectsGrid";
 import ProjectsSummary from "@/components/ProjectsSummary";
 import TrackBar from "@/components/TrackBar";
-import { parseProjectsCSV, type ProjectData } from "@/lib/parseProjects";
+import { parseProjectsForCompany, type ProjectData } from "@/lib/parseProjects";
 import { clearSession, getSessionCompanies } from "@/lib/auth";
 
-import TRIBUTI_CSV from "@/data/tributi.csv?raw";
-import TRIBUTI_PROJECTS_CSV from "@/data/tributi_projects.csv?raw";
-import TRUORA_CSV from "@/data/truora.csv?raw";
-import TRUORA_PROJECTS_CSV from "@/data/truora_projects.csv?raw";
-import BACU_CSV from "@/data/bacu.csv?raw";
-import BACU_PROJECTS_CSV from "@/data/bacu_projects.csv?raw";
-import MONO_CSV from "@/data/mono.csv?raw";
-import SKALO_CSV from "@/data/skalo.csv?raw";
-import SKALO_PROJECTS_CSV from "@/data/skalo_projects.csv?raw";
+import STUDENTS_CSV from "@/data/students.csv?raw";
+import PROJECTS_CSV from "@/data/projects.csv?raw";
 import MODULE_PROGRESS_CSV from "@/data/module_progress.csv?raw";
 import MODULES_CATALOG_CSV from "@/data/modules_catalog.csv?raw";
 import { computeModuleStats, computeStudentModules, computeAggregateModules } from "@/lib/parseModules";
@@ -47,28 +40,15 @@ interface Props {
 
 export default function Dashboard({ company }: Props) {
   const navigate = useNavigate();
-  const { students, companyName, loaded, loading, loadCSV } = useDashboard();
+  const { students, companyName, loaded, loading, loadCSVForCompany } = useDashboard();
   const [trackFilter, setTrackFilter] = useState<"code" | "nocode" | null>(null);
   const [projects, setProjects] = useState<ProjectData[]>([]);
 
   useEffect(() => {
+    const label = COMPANY_LABELS[company] ?? company;
     const mods = computeModuleStats(MODULE_PROGRESS_CSV, company);
-    if (company === "tributi") {
-      loadCSV(TRIBUTI_CSV, "Tributi", mods);
-      setProjects(parseProjectsCSV(TRIBUTI_PROJECTS_CSV));
-    } else if (company === "truora") {
-      loadCSV(TRUORA_CSV, "Truora", mods);
-      setProjects(parseProjectsCSV(TRUORA_PROJECTS_CSV));
-    } else if (company === "bacu") {
-      loadCSV(BACU_CSV, "Bacu", mods);
-      setProjects(parseProjectsCSV(BACU_PROJECTS_CSV));
-    } else if (company === "mono") {
-      loadCSV(MONO_CSV, "Mono", mods);
-      setProjects([]);
-    } else if (company === "skalo") {
-      loadCSV(SKALO_CSV, "Skalo", mods);
-      setProjects(parseProjectsCSV(SKALO_PROJECTS_CSV));
-    }
+    loadCSVForCompany(STUDENTS_CSV, company, label, mods);
+    setProjects(parseProjectsForCompany(PROJECTS_CSV, company));
   }, [company]);
 
   const multiCompany = getSessionCompanies().length > 1;

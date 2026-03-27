@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import type { StudentWithMeta } from "./types";
-import { parseCSV } from "./parseStudents";
+import { parseCSV, parseStudentsForCompany } from "./parseStudents";
 import type { ModuleStats } from "./parseModules";
 
 export function useDashboard() {
@@ -21,6 +21,18 @@ export function useDashboard() {
     }
   }, []);
 
+  const loadCSVForCompany = useCallback((text: string, companySlug: string, name: string, moduleMap?: Map<string, ModuleStats>) => {
+    setLoading(true);
+    try {
+      const parsed = parseStudentsForCompany(text, companySlug, moduleMap);
+      setStudents(parsed);
+      setCompanyName(name);
+      setLoaded(true);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   const loadFile = useCallback(
     (file: File) => {
       const reader = new FileReader();
@@ -34,5 +46,5 @@ export function useDashboard() {
     [loadCSV]
   );
 
-  return { students, companyName, loaded, loading, loadCSV, loadFile };
+  return { students, companyName, loaded, loading, loadCSV, loadCSVForCompany, loadFile };
 }

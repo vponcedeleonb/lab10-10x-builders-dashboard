@@ -186,6 +186,15 @@ export function enrichStudent(raw: Record<string, string>, moduleOverride?: Modu
   };
 }
 
+const COMPANY_LABEL: Record<string, string> = {
+  bacu:    "Baco",
+  mono:    "Mono",
+  skalo:   "Skalo",
+  tributi: "Tributi",
+  truora:  "Truora",
+};
+
+/** Parse all rows from the combined students.csv, no filtering. */
 export function parseCSV(
   csvText: string,
   moduleMap?: Map<string, ModuleStats>
@@ -200,4 +209,25 @@ export function parseCSV(
     const override = moduleMap?.get(email);
     return enrichStudent(row, override);
   });
+}
+
+/** Parse the combined students.csv, returning only rows for the given company slug. */
+export function parseStudentsForCompany(
+  csvText: string,
+  companySlug: string,
+  moduleMap?: Map<string, ModuleStats>
+): StudentWithMeta[] {
+  const label = COMPANY_LABEL[companySlug.toLowerCase()] ?? companySlug;
+  const result = Papa.parse<Record<string, string>>(csvText, {
+    header: true,
+    skipEmptyLines: true,
+    transformHeader: (h) => h.trim(),
+  });
+  return result.data
+    .filter((row) => (row.company ?? "").trim() === label)
+    .map((row) => {
+      const email = (row.email ?? "").trim().toLowerCase();
+      const override = moduleMap?.get(email);
+      return enrichStudent(row, override);
+    });
 }
