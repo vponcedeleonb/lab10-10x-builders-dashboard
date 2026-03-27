@@ -1,0 +1,32 @@
+display_name,email,week_number,module_title,module_type,group_name,module_status,last_video_position_seconds,video_duration_seconds,video_watch_pct
+anderson.guerrero,anderson.guerrero@anturioymagnolio.com,1,"El Problema Real: El Síndrome del ""Copiloto Pasivo""",video,,completed,250,250,100.0
+anderson.guerrero,anderson.guerrero@anturioymagnolio.com,1,Fundamentos: El Loop de Ingeniería Híbrida,video,,completed,447,447,100.0
+anderson.guerrero,anderson.guerrero@anturioymagnolio.com,1,"El Arte del ""Technical Brief"" (Architecting)",video,,in_progress,365,368,99.2
+anderson.guerrero,anderson.guerrero@anturioymagnolio.com,1,Planificación y Negociación (The Planner),video,,completed,416,416,100.0
+anderson.guerrero,anderson.guerrero@anturioymagnolio.com,1,"Implementación y ""Lazy Iteration""",video,,completed,381,381,100.0
+anderson.guerrero,anderson.guerrero@anturioymagnolio.com,1,Code Review Forense (Auditing),video,,completed,330,330,100.0
+anderson.guerrero,anderson.guerrero@anturioymagnolio.com,1,Entregable de la Semana,video,,completed,227,231,98.3
+anderson.guerrero,anderson.guerrero@anturioymagnolio.com,2,De Jugador Estrella a Director Técnico,video,Semana 2: Construyendo tu Sistema,completed,193,193,100.0
+anderson.guerrero,anderson.guerrero@anturioymagnolio.com,2,"Los 4 Componentes: Reglas, Skills, MCPs, SubAgents",video,Semana 2: Construyendo tu Sistema,completed,645,645,100.0
+anderson.guerrero,anderson.guerrero@anturioymagnolio.com,2,Skills en Práctica: TDD y Setup del Clon de Twitter,video,Semana 2: Construyendo tu Sistema,completed,472,472,100.0
+anderson.guerrero,anderson.guerrero@anturioymagnolio.com,2,MCP: Concepto y Arquitectura,video,Semana 2: Construyendo tu Sistema,completed,414,414,100.0
+anderson.guerrero,anderson.guerrero@anturioymagnolio.com,2,MCP en Práctica: Supabase Local + Skills,video,Semana 2: Construyendo tu Sistema,in_progress,800,1002,79.8
+anderson.guerrero,anderson.guerrero@anturioymagnolio.com,2,SubAgents: Contexto Fresco y Delegación,video,Semana 2: Construyendo tu Sistema,in_progress,0,340,0.0
+leopoldo.montesinos,leopoldo.montesinos@silversands-tech.com,1,"El Problema Real: El Síndrome del ""Copiloto Pasivo""",video,,completed,250,250,100.0
+leopoldo.montesinos,leopoldo.montesinos@silversands-tech.com,1,Fundamentos: El Loop de Ingeniería Híbrida,video,,in_progress,351,447,78.5
+leopoldo.montesinos,leopoldo.montesinos@silversands-tech.com,1,"El Arte del ""Technical Brief"" (Architecting)",video,,completed,368,368,100.0
+leopoldo.montesinos,leopoldo.montesinos@silversands-tech.com,1,Planificación y Negociación (The Planner),video,,completed,416,416,100.0
+leopoldo.montesinos,leopoldo.montesinos@silversands-tech.com,1,"Implementación y ""Lazy Iteration""",video,,completed,381,381,100.0
+leopoldo.montesinos,leopoldo.montesinos@silversands-tech.com,1,Code Review Forense (Auditing),video,,completed,330,330,100.0
+leopoldo.montesinos,leopoldo.montesinos@silversands-tech.com,1,Entregable de la Semana,video,,completed,231,231,100.0
+leopoldo.montesinos,leopoldo.montesinos@silversands-tech.com,2,De Jugador Estrella a Director Técnico,video,Semana 2: Construyendo tu Sistema,completed,193,193,100.0
+leopoldo.montesinos,leopoldo.montesinos@silversands-tech.com,2,"Los 4 Componentes: Reglas, Skills, MCPs, SubAgents",video,Semana 2: Construyendo tu Sistema,completed,645,645,100.0
+leopoldo.montesinos,leopoldo.montesinos@silversands-tech.com,2,Skills en Práctica: TDD y Setup del Clon de Twitter,video,Semana 2: Construyendo tu Sistema,completed,472,472,100.0
+leopoldo.montesinos,leopoldo.montesinos@silversands-tech.com,2,MCP: Concepto y Arquitectura,video,Semana 2: Construyendo tu Sistema,completed,414,414,100.0
+leopoldo.montesinos,leopoldo.montesinos@silversands-tech.com,2,MCP en Práctica: Supabase Local + Skills,video,Semana 2: Construyendo tu Sistema,completed,1002,1002,100.0
+leopoldo.montesinos,leopoldo.montesinos@silversands-tech.com,2,CLI como Alternativa a MCP,video,Semana 2: Construyendo tu Sistema,completed,522,522,100.0
+leopoldo.montesinos,leopoldo.montesinos@silversands-tech.com,2,Configurar CLI: Agent Browser de Vercel,video,Semana 2: Construyendo tu Sistema,completed,587,587,100.0
+leopoldo.montesinos,leopoldo.montesinos@silversands-tech.com,2,SubAgents: Contexto Fresco y Delegación,video,Semana 2: Construyendo tu Sistema,in_progress,330,340,97.1
+leopoldo.montesinos,leopoldo.montesinos@silversands-tech.com,2,Creando nuestro Subagent de QA,video,Semana 2: Construyendo tu Sistema,in_progress,214,746,28.7
+leopoldo.montesinos,leopoldo.montesinos@silversands-tech.com,3,Implementación de Agentes Inteligentes con Langchain y TypeScript,video,,in_progress,0,0,
+leopoldo.montesinos,leopoldo.montesinos@silversands-tech.com,3,Barreras de Seguridad en Agentes de Inteligencia Artificial,video,,in_progress,0,0,
