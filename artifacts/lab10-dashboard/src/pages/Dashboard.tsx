@@ -13,6 +13,7 @@ import ProjectsGrid from "@/components/ProjectsGrid";
 import ProjectsSummary from "@/components/ProjectsSummary";
 import TrackBar from "@/components/TrackBar";
 import { parseProjectsForCompany, type ProjectData } from "@/lib/parseProjects";
+import type { SummaryData } from "@/components/ProjectsSummary";
 import { clearSession, getSessionCompanies } from "@/lib/auth";
 
 import STUDENTS_CSV from "@/data/students.csv?raw";
@@ -43,13 +44,23 @@ export default function Dashboard({ company }: Props) {
   const { students, companyName, loaded, loading, loadCSVForCompany } = useDashboard();
   const [trackFilter, setTrackFilter] = useState<"code" | "nocode" | null>(null);
   const [projects, setProjects] = useState<ProjectData[]>([]);
+  const [summaryData, setSummaryData] = useState<SummaryData | null>(null);
 
   useEffect(() => {
     const label = COMPANY_LABELS[company] ?? company;
     const mods = computeModuleStats(MODULE_PROGRESS_CSV, company);
     loadCSVForCompany(STUDENTS_CSV, company, label, mods);
     setProjects(parseProjectsForCompany(PROJECTS_CSV, company));
+    setSummaryData(null);
   }, [company]);
+
+  const projectsByEmail = useMemo(() => {
+    const map = new Map<string, ProjectData>();
+    for (const p of projects) {
+      if (p.email) map.set(p.email.toLowerCase(), p);
+    }
+    return map;
+  }, [projects]);
 
   const multiCompany = getSessionCompanies().length > 1;
 
@@ -284,6 +295,8 @@ export default function Dashboard({ company }: Props) {
                 students={filteredStudents}
                 modulesByEmail={studentModulesMap}
                 allModules={aggModules}
+                projectsByEmail={projectsByEmail}
+                summaryCategories={summaryData?.categories}
               />
             </section>
             <section>
@@ -295,7 +308,7 @@ export default function Dashboard({ company }: Props) {
               <EngagementSection students={filteredStudents} />
             </section>
             <section>
-              <ProjectsSummary projects={projects} apiBase={API_BASE} />
+              <ProjectsSummary projects={projects} apiBase={API_BASE} onDataLoaded={setSummaryData} />
             </section>
             <section>
               <ProjectsGrid students={filteredStudents} projects={projects} />

@@ -2,14 +2,14 @@ import React, { useState, useEffect } from "react";
 import type { ProjectData } from "@/lib/parseProjects";
 import { Sparkles, RefreshCw, ChevronRight } from "lucide-react";
 
-interface Category {
+export interface Category {
   name: string;
   count: number;
   description: string;
   examples: string[];
 }
 
-interface SummaryData {
+export interface SummaryData {
   categories: Category[];
   insight: string;
 }
@@ -17,6 +17,7 @@ interface SummaryData {
 interface Props {
   projects: ProjectData[];
   apiBase: string;
+  onDataLoaded?: (data: SummaryData) => void;
 }
 
 const CATEGORY_COLORS = [
@@ -27,7 +28,7 @@ const CATEGORY_COLORS = [
   { bg: "bg-rose-50", border: "border-rose-100", text: "text-rose-700", dot: "bg-rose-400" },
 ];
 
-export default function ProjectsSummary({ projects, apiBase }: Props) {
+export default function ProjectsSummary({ projects, apiBase, onDataLoaded }: Props) {
   const [data, setData] = useState<SummaryData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -53,6 +54,7 @@ export default function ProjectsSummary({ projects, apiBase }: Props) {
       if (!res.ok) throw new Error("Error del servidor");
       const json = await res.json();
       setData(json);
+      onDataLoaded?.(json);
     } catch (err) {
       setError("No se pudo generar el resumen. Intenta de nuevo.");
     } finally {

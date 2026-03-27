@@ -5,11 +5,47 @@ import type { StudentWithMeta } from "@/lib/types";
 import { ChevronDown, ChevronUp, ChevronRight } from "lucide-react";
 import type { AggModule, ModuleEntry } from "@/lib/parseModules";
 import ModuleHeatmap from "./ModuleHeatmap";
+import type { ProjectData } from "@/lib/parseProjects";
+import type { Category } from "./ProjectsSummary";
 
 interface Props {
   students: StudentWithMeta[];
   modulesByEmail?: Map<string, ModuleEntry[]>;
   allModules?: AggModule[];
+  projectsByEmail?: Map<string, ProjectData>;
+  summaryCategories?: Category[];
+}
+
+const CATEGORY_COLORS = [
+  { bg: "bg-blue-50", border: "border-blue-100", text: "text-blue-700", dot: "bg-blue-400" },
+  { bg: "bg-violet-50", border: "border-violet-100", text: "text-violet-700", dot: "bg-violet-400" },
+  { bg: "bg-emerald-50", border: "border-emerald-100", text: "text-emerald-700", dot: "bg-emerald-400" },
+  { bg: "bg-amber-50", border: "border-amber-100", text: "text-amber-700", dot: "bg-amber-400" },
+  { bg: "bg-rose-50", border: "border-rose-100", text: "text-rose-700", dot: "bg-rose-400" },
+];
+
+function extractShortTitle(content: string): string {
+  const parts = content.split("|").map((s) => s.trim());
+  const desc = parts.find((p) => !p.startsWith("#") && p.length > 15) ?? "";
+  const words = desc.replace(/[^a-zA-ZÀ-ú0-9\s,]/g, " ").trim().split(/\s+/).filter(Boolean);
+  if (words.length === 0) return "";
+  return words.slice(0, 7).join(" ") + (words.length > 7 ? "…" : "");
+}
+
+function getStudentCategories(
+  student: StudentWithMeta,
+  categories: Category[]
+): Array<{ cat: Category; colorIdx: number }> {
+  const nameNorm = (student.display_name ?? "").toLowerCase().trim();
+  const emailNorm = (student.email ?? "").toLowerCase().trim();
+  return categories
+    .map((cat, idx) => ({ cat, colorIdx: idx }))
+    .filter(({ cat }) =>
+      cat.examples.some((ex) => {
+        const exNorm = ex.toLowerCase().trim();
+        return exNorm === nameNorm || exNorm === emailNorm || nameNorm.includes(exNorm) || exNorm.includes(nameNorm);
+      })
+    );
 }
 
 type SortKey = "display_name" | "completion_rate" | "avg_ai_score" | "days_since_last_submission";
@@ -36,7 +72,7 @@ function scoreColor(score: number) {
   return "text-[#4ade80]";
 }
 
-export default function StudentTable({ students, modulesByEmail, allModules }: Props) {
+export default function StudentTable({ students, modulesByEmail, allModules, projectsByEmail, summaryCategories }: Props) {
   const [sortKey, setSortKey] = useState<SortKey>("display_name");
   const [sortDir, setSortDir] = useState<SortDir>("asc");
   const [search, setSearch] = useState("");
@@ -327,10 +363,47 @@ export default function StudentTable({ students, modulesByEmail, allModules }: P
                           <p className="text-muted-foreground text-xs mb-1 font-medium uppercase tracking-wide">
                             Proyecto Final
                           </p>
-                          <p className="text-foreground">{s.project_title || "—"}</p>
-                          <p className="text-xs text-muted-foreground capitalize">
-                            Estado: {s.project_status || "—"}
-                          </p>
+                          {(() => {
+                            const proj = projectsByEmail?.get(s.email.toLowerCase());
+                            const shortTitle = proj?.project_content_text
+                              ? extractShortTitle(proj.project_content_text)
+                              : "";
+                            const matched = summaryCategories
+                              ? getStudentCategories(s, summaryCategories)
+                              : [];
+                            return (
+                              <>
+                                {shortTitle ? (
+                                  <p className="text-foreground text-xs font-medium mb-1.5 leading-snug">
+                                    {shortTitle}
+                                  </p>
+                                ) : (
+                                  <p className="text-foreground text-xs mb-1.5">{s.project_title || "—"}</p>
+                                )}
+                                {matched.length > 0 ? (
+                                  <div className="flex flex-wrap gap-1 mb-1">
+                                    {matched.map(({ cat, colorIdx }) => {
+                                      const c = CATEGORY_COLORS[colorIdx % CATEGORY_COLORS.length];
+                                      return (
+                                        <span
+                                          key={cat.name}
+                                          className={`text-[10px] px-1.5 py-0.5 rounded border ${c.bg} ${c.border} ${c.text} font-medium`}
+                                          style={{ fontFamily: "'PT Mono', monospace" }}
+                                        >
+                                          {cat.name}
+                                        </span>
+                                      );
+                                    })}
+                                  </div>
+                                ) : summaryCategories ? (
+                                  <p className="text-[10px] text-muted-foreground mb-1">Sin categoría asignada</p>
+                                ) : null}
+                                <p className="text-xs text-muted-foreground capitalize">
+                                  Estado: {s.project_status || "—"}
+                                </p>
+                              </>
+                            );
+                          })()}
                         </div>
                         <div>
                           <p className="text-muted-foreground text-xs mb-1 font-medium uppercase tracking-wide">
