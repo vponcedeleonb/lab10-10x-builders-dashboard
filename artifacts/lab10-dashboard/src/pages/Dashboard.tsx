@@ -125,7 +125,7 @@ export default function Dashboard({ company }: Props) {
       const pathLower = (s.learning_path ?? "").toLowerCase();
       const isCode = pathLower.includes("code") && !pathLower.includes("no-code") && !pathLower.includes("no code");
       const total = isCode ? 23 : 36;
-      const completion_rate = total > 0 ? Math.round((completed / total) * 100) : 0;
+      const completion_rate = total > 0 ? completed / total : 0;
       return { ...s, modules_completed: completed, modules_in_progress: inProgress, completion_rate };
     });
   }, [students, emailTrackMap, studentModulesMap]);
