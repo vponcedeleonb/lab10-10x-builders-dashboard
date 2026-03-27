@@ -24,12 +24,9 @@ const CATEGORY_COLORS = [
   { bg: "bg-rose-50", border: "border-rose-100", text: "text-rose-700", dot: "bg-rose-400" },
 ];
 
-function extractShortTitle(content: string): string {
+function extractDescription(content: string): string {
   const parts = content.split("|").map((s) => s.trim());
-  const desc = parts.find((p) => !p.startsWith("#") && p.length > 15) ?? "";
-  const words = desc.replace(/[^a-zA-ZÀ-ú0-9\s,]/g, " ").trim().split(/\s+/).filter(Boolean);
-  if (words.length === 0) return "";
-  return words.slice(0, 7).join(" ") + (words.length > 7 ? "…" : "");
+  return parts.find((p) => !p.startsWith("#") && p.length > 15) ?? "";
 }
 
 function getStudentCategories(
@@ -365,17 +362,17 @@ export default function StudentTable({ students, modulesByEmail, allModules, pro
                           </p>
                           {(() => {
                             const proj = projectsByEmail?.get(s.email.toLowerCase());
-                            const shortTitle = proj?.project_content_text
-                              ? extractShortTitle(proj.project_content_text)
+                            const description = proj?.project_content_text
+                              ? extractDescription(proj.project_content_text)
                               : "";
                             const matched = summaryCategories
                               ? getStudentCategories(s, summaryCategories)
                               : [];
                             return (
                               <>
-                                {shortTitle ? (
-                                  <p className="text-foreground text-xs font-medium mb-1.5 leading-snug">
-                                    {shortTitle}
+                                {description ? (
+                                  <p className="text-foreground text-xs mb-1.5 leading-relaxed">
+                                    {description}
                                   </p>
                                 ) : (
                                   <p className="text-foreground text-xs mb-1.5">{s.project_title || "—"}</p>
