@@ -1,0 +1,68 @@
+week_number,module_title
+1,AI en el día a día - Herramientas más allá de chats
+1,Bases de conocimiento
+1,Bienvenido al programa
+1,Code Review Forense (Auditing)
+1,Context engineering
+1,Definición de problemas y flujos de solución
+1,Ejercicio del proyecto: Arquitectura de tu solución
+1,"El Arte del ""Technical Brief"" (Architecting)"
+1,"El Problema Real: El Síndrome del ""Copiloto Pasivo"""
+1,Entregable de la Semana
+1,Estado actual de AI
+1,Fundamentos: El Loop de Ingeniería Híbrida
+1,"Implementación y ""Lazy Iteration"""
+1,Input > Proceso > Output
+1,Introducción a Markdown
+1,LLM & Modelos
+1,Memoria
+1,Planificación y Negociación (The Planner)
+1,Técnicas de prompting
+2,Cazadores de Bugs
+2,CLI como Alternativa a MCP
+2,Condicionales
+2,Configurar CLI: Agent Browser de Vercel
+2,Construcción de un sistema completo con agentes
+2,Construyendo una automatización compleja
+2,Creando nuestro Subagent de QA
+2,Credenciales
+2,De Jugador Estrella a Director Técnico
+2,Evaluaciones en n8n
+2,Expresiones
+2,Human in the loop
+2,Introducción a agentes
+2,Introducción a automatizaciones con n8n
+2,JSON
+2,Loops
+2,"Los 4 Componentes: Reglas, Skills, MCPs, SubAgents"
+2,MCP en Práctica: Supabase Local + Skills
+2,MCP: Concepto y Arquitectura
+2,RAG
+2,Skills en Práctica: TDD y Setup del Clon de Twitter
+2,Structured output
+2,SubAgents: Contexto Fresco y Delegación
+2,Webhooks
+3,Arquitectura de IA: Agentes Autónomos vs Flujos de Trabajo
+3,Barreras de Seguridad en Agentes de Inteligencia Artificial
+3,Desarrollo de Aplicaciones con Replit e IA
+3,Desarrollo Full-Stack sin Código usando Lovable
+3,Desarrollo Guiado por Especificaciones (Spec-Driven Development) con IA
+3,Despliegue de Aplicaciones Web
+3,Dominando Cursor: Desarrollo con IA
+3,Entregable Final: Diseño e Implementación de Agentes
+3,Fundamentos del Sistema de Archivos (Filesystem)
+3,Implementación de Agentes Inteligentes con Langchain y TypeScript
+3,Introducción a la Terminal y Comandos Básicos
+3,Introducción a LangChain y Agentes de IA
+3,Introducción a los Agentes de Código con IA
+3,Localhost: Desarrollo Local
+3,¿Cómo funciona un Agente?
+3,Árbol de Decisión para Elegir Herramientas de Desarrollo
+4,Arquitectura de un Agente Inteligente Multicanal
+4,Configuración Inicial de un Agente de IA con Supabase
+4,Evolución y Próximos Pasos del Agente de IA
+4,"Fundamentos de SQL: Operaciones CRUD, JOINs e Inteligencia Artificial"
+4,Implementación de Row-Level Security en Supabase
+4,Integración de Agentes de IA con LLMs usando OpenRouter
+4,Integración de la API de GitHub en Agentes de IA
+4,Integración de un Agente de IA Local con Telegram
