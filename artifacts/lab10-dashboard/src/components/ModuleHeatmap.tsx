@@ -32,12 +32,7 @@ interface ModalModule {
   totalForTrack: number;
 }
 
-const TOTAL_WEEKS = 8;
-const AVAILABLE_WEEKS = 4;
-const PLACEHOLDER_WEEKS = Array.from(
-  { length: TOTAL_WEEKS - AVAILABLE_WEEKS },
-  (_, i) => i + AVAILABLE_WEEKS + 1
-);
+const PLACEHOLDER_WEEKS: number[] = [];
 
 function interpolate(ratio: number): string {
   if (ratio <= 0) return "#e5e7eb";
@@ -393,10 +388,6 @@ export default function ModuleHeatmap(props: Props) {
             <span className="text-[10px] text-muted-foreground">{label}</span>
           </div>
         ))}
-        <div className="flex items-center gap-1">
-          <div className="w-3 h-3 rounded-[2px] border border-dashed border-gray-300 bg-gray-50" />
-          <span className="text-[10px] text-gray-400">Próximamente</span>
-        </div>
       </div>
     );
 
