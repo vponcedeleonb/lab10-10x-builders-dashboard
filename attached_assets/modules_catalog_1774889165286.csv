@@ -1,0 +1,83 @@
+Path,Semana,Orden,Nombre
+10x Builders: Code,1,1,"El Problema Real: El Síndrome del ""Copiloto Pasivo"""
+10x Builders: Code,1,2,Fundamentos: El Loop de Ingeniería Híbrida
+10x Builders: Code,1,3,"El Arte del ""Technical Brief"" (Architecting)"
+10x Builders: Code,1,4,Planificación y Negociación (The Planner)
+10x Builders: Code,1,5,"Implementación y ""Lazy Iteration"""
+10x Builders: Code,1,6,Code Review Forense (Auditing)
+10x Builders: Code,1,7,Entregable de la Semana
+10x Builders: Code,2,1,De Jugador Estrella a Director Técnico
+10x Builders: Code,2,2,"Los 4 Componentes: Reglas, Skills, MCPs, SubAgents"
+10x Builders: Code,2,3,Skills en Práctica: TDD y Setup del Clon de Twitter
+10x Builders: Code,2,4,MCP: Concepto y Arquitectura
+10x Builders: Code,2,5,MCP en Práctica: Supabase Local + Skills
+10x Builders: Code,2,6,CLI como Alternativa a MCP
+10x Builders: Code,2,7,Configurar CLI: Agent Browser de Vercel
+10x Builders: Code,2,8,SubAgents: Contexto Fresco y Delegación
+10x Builders: Code,2,9,Creando nuestro Subagent de QA
+10x Builders: Code,2,10,Cazadores de Bugs
+10x Builders: Code,3,1,Arquitectura de IA: Agentes Autónomos vs Flujos de Trabajo
+10x Builders: Code,3,2,¿Cómo funciona un Agente?
+10x Builders: Code,3,3,Introducción a LangChain y Agentes de IA
+10x Builders: Code,3,4,Implementación de Agentes Inteligentes con Langchain y TypeScript
+10x Builders: Code,3,5,Barreras de Seguridad en Agentes de Inteligencia Artificial
+10x Builders: Code,3,6,Entregable Final: Diseño e Implementación de Agentes
+10x Builders: Code,4,1,Arquitectura de un Agente Inteligente Multicanal
+10x Builders: Code,4,2,Configuración Inicial de un Agente de IA con Supabase
+10x Builders: Code,4,3,Integración de Agentes de IA con LLMs usando OpenRouter
+10x Builders: Code,4,4,Integración de un Agente de IA Local con Telegram
+10x Builders: Code,4,5,Integración de la API de GitHub en Agentes de IA
+10x Builders: Code,4,6,Evolución y Próximos Pasos del Agente de IA
+10x Builders: Code,5,1,El Problema Real: El Cerebro en la Cubeta
+10x Builders: Code,6,1,El Problema Real: El Becario Genio con Amnesia
+10x Builders: Code,7,1,"El Problema Real: La Trampa del ""Vibe Check"""
+10x Builders: Code,8,1,"El Problema Real: La Mentira de ""Funciona en mi Máquina"""
+10x Builders: No-Code,1,1,Bienvenido al programa
+10x Builders: No-Code,1,2,Estado actual de AI
+10x Builders: No-Code,1,3,LLM & Modelos
+10x Builders: No-Code,1,4,Introducción a Markdown
+10x Builders: No-Code,1,5,Técnicas de prompting
+10x Builders: No-Code,1,6,Context engineering
+10x Builders: No-Code,1,7,Bases de conocimiento
+10x Builders: No-Code,1,8,Memoria
+10x Builders: No-Code,1,9,Input > Proceso > Output
+10x Builders: No-Code,1,10,Definición de problemas y flujos de solución
+10x Builders: No-Code,1,11,AI en el día a día - Herramientas más allá de chats
+10x Builders: No-Code,1,12,Ejercicio del proyecto: Arquitectura de tu solución
+10x Builders: No-Code,2,1,Introducción a automatizaciones con n8n
+10x Builders: No-Code,2,2,Condicionales
+10x Builders: No-Code,2,3,Expresiones
+10x Builders: No-Code,2,4,Credenciales
+10x Builders: No-Code,2,5,JSON
+10x Builders: No-Code,2,6,Loops
+10x Builders: No-Code,2,7,Webhooks
+10x Builders: No-Code,2,8,Evaluaciones en n8n
+10x Builders: No-Code,2,9,Construyendo una automatización compleja
+10x Builders: No-Code,2,10,Introducción a agentes
+10x Builders: No-Code,2,11,RAG
+10x Builders: No-Code,2,12,Human in the loop
+10x Builders: No-Code,2,13,Structured output
+10x Builders: No-Code,2,14,Construcción de un sistema completo con agentes 
+10x Builders: No-Code,3,1,Introducción a los Agentes de Código con IA
+10x Builders: No-Code,3,2,Desarrollo Guiado por Especificaciones (Spec-Driven Development) con IA
+10x Builders: No-Code,3,3,Desarrollo Full-Stack sin Código usando Lovable
+10x Builders: No-Code,3,4,Desarrollo de Aplicaciones con Replit e IA
+10x Builders: No-Code,3,5,Fundamentos del Sistema de Archivos (Filesystem)
+10x Builders: No-Code,3,6,Introducción a la Terminal y Comandos Básicos
+10x Builders: No-Code,3,7,Localhost: Desarrollo Local
+10x Builders: No-Code,3,8,Despliegue de Aplicaciones Web
+10x Builders: No-Code,3,9,Dominando Cursor: Desarrollo con IA
+10x Builders: No-Code,3,10,Árbol de Decisión para Elegir Herramientas de Desarrollo
+10x Builders: No-Code,4,1,Introducción a APIs
+10x Builders: No-Code,4,2,"POST, PUT, GET, DELETE"
+10x Builders: No-Code,4,3,Documentaciones y Endpoints
+10x Builders: No-Code,4,4,Esquemas de datos - Introducción a Supabase
+10x Builders: No-Code,4,5,"Fundamentos de SQL: Operaciones CRUD, JOINs e Inteligencia Artificial"
+10x Builders: No-Code,4,6,Implementación de Row-Level Security en Supabase
+10x Builders: No-Code,4,7,Tipos de Bases de Datos: Cómo Elegir la Base de Datos Correcta
+10x Builders: No-Code,4,8,Creación de API RESTful con Cursor
+10x Builders: No-Code,4,9,Construcción de un sistema completo
+10x Builders: No-Code,5,0,De asistentes a agentes autónomos: el cambio de paradigma que está pasando ahora
+10x Builders: No-Code,6,0,Cómo la IA transforma roles: el framework para identificar oportunidades en cualquier área
+10x Builders: No-Code,7,0,"Diseñar evaluaciones para tu sistema: métricas, criterios y casos de prueba"
+10x Builders: No-Code,8,0,"Ambientes: desarrollo, staging y producción - de prototipo a producto real"
