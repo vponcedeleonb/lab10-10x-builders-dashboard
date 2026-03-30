@@ -3,11 +3,11 @@ import { differenceInDays, parseISO } from "date-fns";
 import type { Student, StudentWithMeta, RiskReason } from "./types";
 import type { ModuleStats } from "./parseModules";
 
-// Modules released through end of week 3 (the current reference point)
-// No-Code: week1=12 + week2=14 + week3=10 = 36
-// Code:    week1=7  + week2=10 + week3=6  = 23
-const TOTAL_MODULES_NOCODE = 36;
-const TOTAL_MODULES_CODE = 23;
+// Modules released through end of week 4 (the current reference point)
+// No-Code: week1=12 + week2=14 + week3=10 + week4=1 = 37
+// Code:    week1=7  + week2=10 + week3=6  + week4=1 = 24
+const TOTAL_MODULES_NOCODE = 37;
+const TOTAL_MODULES_CODE = 24;
 
 const SKILL_CATEGORIES: { name: string; keywords: string[] }[] = [
   {

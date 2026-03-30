@@ -51,7 +51,7 @@ export function computeModuleStats(
 
   for (const row of rows) {
     const week = parseInt(row.week_number ?? "0", 10);
-    if (week < 1 || week > 3) continue;
+    if (week < 1 || week > 4) continue;
     const email = (row.email ?? "").trim().toLowerCase();
     if (!email) continue;
     if (!map.has(email)) map.set(email, { completedW3: 0, inProgressW3: 0 });
@@ -82,7 +82,7 @@ export function computeStudentModules(
 
   for (const row of rows) {
     const week = parseInt(row.week_number ?? "0", 10);
-    if (week < 1 || week > 3) continue;
+    if (week < 1 || week > 4) continue;
     const email = (row.email ?? "").trim().toLowerCase();
     if (!email) continue;
     const status = (row.module_status ?? "").trim().toLowerCase();
@@ -123,7 +123,7 @@ export function parseCatalog(catalogCsv: string): CatalogModule[] {
       const track: "nocode" | "code" = lp.includes("No-Code") ? "nocode" : "code";
       return { track, week, sortOrder: sort, title };
     })
-    .filter((m) => m.week >= 1 && m.week <= 3 && m.title);
+    .filter((m) => m.week >= 1 && m.week <= 4 && m.title);
 }
 
 export function computeAggregateModules(
@@ -143,7 +143,7 @@ export function computeAggregateModules(
 
   for (const row of rows) {
     const week = parseInt(row.week_number ?? "0", 10);
-    if (week < 1 || week > 3) continue;
+    if (week < 1 || week > 4) continue;
     const email = (row.email ?? "").trim().toLowerCase();
     if (!email) continue;
     const title = (row.module_title ?? "").trim();
