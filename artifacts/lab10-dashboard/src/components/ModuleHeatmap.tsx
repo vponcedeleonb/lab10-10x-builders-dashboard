@@ -33,7 +33,7 @@ interface ModalModule {
 }
 
 const TOTAL_WEEKS = 8;
-const AVAILABLE_WEEKS = 3;
+const AVAILABLE_WEEKS = 4;
 const PLACEHOLDER_WEEKS = Array.from(
   { length: TOTAL_WEEKS - AVAILABLE_WEEKS },
   (_, i) => i + AVAILABLE_WEEKS + 1
