@@ -16,10 +16,10 @@ import { parseProjectsForCompany, type ProjectData } from "@/lib/parseProjects";
 import type { SummaryData } from "@/components/ProjectsSummary";
 import { clearSession, getSessionCompanies } from "@/lib/auth";
 
-import STUDENTS_CSV from "@/data/students.csv?raw";
-import PROJECTS_CSV from "@/data/projects.csv?raw";
-import MODULE_PROGRESS_CSV from "@/data/module_progress.csv?raw";
-import MODULES_CATALOG_CSV from "@/data/modules_catalog.csv?raw";
+import STUDENTS_CSV_URL from "@/data/students.csv?url";
+import PROJECTS_CSV_URL from "@/data/projects.csv?url";
+import MODULE_PROGRESS_CSV_URL from "@/data/module_progress.csv?url";
+import MODULES_CATALOG_CSV_URL from "@/data/modules_catalog.csv?url";
 import { computeModuleStats, computeStudentModules, computeAggregateModules } from "@/lib/parseModules";
 import ModuleHeatmap, { type StudentInfo } from "@/components/ModuleHeatmap";
 import lab10Logo from "@assets/Asset_12_1774543506448.png";
@@ -45,13 +45,34 @@ export default function Dashboard({ company }: Props) {
   const [trackFilter, setTrackFilter] = useState<"code" | "nocode" | null>(null);
   const [projects, setProjects] = useState<ProjectData[]>([]);
   const [summaryData, setSummaryData] = useState<SummaryData | null>(null);
+  const [moduleProgressCsvText, setModuleProgressCsvText] = useState<string>("");
+  const [modulesCatalogCsvText, setModulesCatalogCsvText] = useState<string>("");
 
   useEffect(() => {
     const label = COMPANY_LABELS[company] ?? company;
-    const mods = computeModuleStats(MODULE_PROGRESS_CSV, company);
-    loadCSVForCompany(STUDENTS_CSV, company, label, mods);
-    setProjects(parseProjectsForCompany(PROJECTS_CSV, company));
-    setSummaryData(null);
+    let cancelled = false;
+
+    const load = async () => {
+      const bust = "?t=" + Date.now();
+      const [studentsCsv, projectsCsv, moduleProgressCsv, modulesCatalogCsv] = await Promise.all([
+        fetch(STUDENTS_CSV_URL + bust).then((r) => r.text()),
+        fetch(PROJECTS_CSV_URL + bust).then((r) => r.text()),
+        fetch(MODULE_PROGRESS_CSV_URL + bust).then((r) => r.text()),
+        fetch(MODULES_CATALOG_CSV_URL + bust).then((r) => r.text()),
+      ]);
+
+      if (cancelled) return;
+
+      setModuleProgressCsvText(moduleProgressCsv);
+      setModulesCatalogCsvText(modulesCatalogCsv);
+      const mods = computeModuleStats(moduleProgressCsv, company);
+      loadCSVForCompany(studentsCsv, company, label, mods);
+      setProjects(parseProjectsForCompany(projectsCsv, company));
+      setSummaryData(null);
+    };
+
+    load();
+    return () => { cancelled = true; };
   }, [company]);
 
   const projectsByEmail = useMemo(() => {
@@ -84,13 +105,13 @@ export default function Dashboard({ company }: Props) {
   }, [students]);
 
   const { modules: aggModules, totalStudents: aggTotal, totalNoCode: aggNoCode, totalCode: aggCode } = useMemo(
-    () => computeAggregateModules(MODULE_PROGRESS_CSV, company, emailTrackMap, MODULES_CATALOG_CSV),
-    [company, emailTrackMap]
+    () => computeAggregateModules(moduleProgressCsvText, company, emailTrackMap, modulesCatalogCsvText),
+    [company, emailTrackMap, moduleProgressCsvText, modulesCatalogCsvText]
   );
 
   const studentModulesMap = useMemo(
-    () => computeStudentModules(MODULE_PROGRESS_CSV, company, emailTrackMap, MODULES_CATALOG_CSV),
-    [company, emailTrackMap]
+    () => computeStudentModules(moduleProgressCsvText, company, emailTrackMap, modulesCatalogCsvText),
+    [company, emailTrackMap, moduleProgressCsvText, modulesCatalogCsvText]
   );
 
   const studentInfoMap = useMemo<Map<string, StudentInfo>>(() => {
@@ -115,7 +136,7 @@ export default function Dashboard({ company }: Props) {
       const inProgress = entries.filter((e) => e.status === "in_progress").length;
       const pathLower = (s.learning_path ?? "").toLowerCase();
       const isCode = pathLower.includes("code") && !pathLower.includes("no-code") && !pathLower.includes("no code");
-      const total = isCode ? 23 : 36;
+      const total = isCode ? 29 : 45;
       const completion_rate = total > 0 ? completed / total : 0;
       return { ...s, modules_completed: completed, modules_in_progress: inProgress, completion_rate };
     });

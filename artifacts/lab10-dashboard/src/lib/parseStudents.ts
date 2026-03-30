@@ -211,6 +211,18 @@ export function parseCSV(
   });
 }
 
+// Baco employees who haven't registered in the platform yet.
+// Hardcoded because the combined students.csv may be served from a proxy cache.
+const BACU_UNREGISTERED: Record<string, string>[] = [
+  { company: "Baco", display_name: "Stephanie",       email: "stephanie@bacu.co",             enrollment_status: "not_registered", enrolled_at: "" },
+  { company: "Baco", display_name: "Andrea Ramirez",  email: "andrea.ramirez@baco.com.co",    enrollment_status: "not_registered", enrolled_at: "" },
+  { company: "Baco", display_name: "Andres Sarmiento",email: "andres.sarmiento@baco.com.co",  enrollment_status: "not_registered", enrolled_at: "" },
+  { company: "Baco", display_name: "Daniel Castillo", email: "daniel.castillo@baco.com.co",   enrollment_status: "not_registered", enrolled_at: "" },
+  { company: "Baco", display_name: "Laura Tocaruncho",email: "laura.tocaruncho@baco.com.co",  enrollment_status: "not_registered", enrolled_at: "" },
+  { company: "Baco", display_name: "Oscar",           email: "oscar@baco.com.co",             enrollment_status: "not_registered", enrolled_at: "" },
+  { company: "Baco", display_name: "Carlos Guevara",  email: "carlos.guevara@baco.com.co",    enrollment_status: "not_registered", enrolled_at: "" },
+];
+
 /** Parse the combined students.csv, returning only rows for the given company slug. */
 export function parseStudentsForCompany(
   csvText: string,
@@ -223,11 +235,23 @@ export function parseStudentsForCompany(
     skipEmptyLines: true,
     transformHeader: (h) => h.trim(),
   });
-  return result.data
+
+  const csvStudents = result.data
     .filter((row) => (row.company ?? "").trim() === label)
     .map((row) => {
       const email = (row.email ?? "").trim().toLowerCase();
       const override = moduleMap?.get(email);
       return enrichStudent(row, override);
     });
+
+  // Merge in hardcoded not-registered students that may be missing from the cached CSV
+  if (companySlug.toLowerCase() === "bacu") {
+    const seenEmails = new Set(csvStudents.map((s) => s.email.toLowerCase()));
+    const missing = BACU_UNREGISTERED.filter(
+      (r) => !seenEmails.has((r.email ?? "").toLowerCase())
+    ).map((row) => enrichStudent(row));
+    return [...csvStudents, ...missing];
+  }
+
+  return csvStudents;
 }
