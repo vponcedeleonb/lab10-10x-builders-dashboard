@@ -22,7 +22,14 @@ learning_path,week_number,sort_order,module_name,module_type,group_name,duration
 10x Builders: Code,3,4,Implementación de Agentes Inteligentes con Langchain y TypeScript,video,,7
 10x Builders: Code,3,5,Barreras de Seguridad en Agentes de Inteligencia Artificial,video,,5
 10x Builders: Code,3,6,Entregable Final: Diseño e Implementación de Agentes,video,,2
-10x Builders: Code,4,1,"El Problema Real: El ""Agente Tonto"" que se pierde en el bosque",video,,0
+10x Builders: Code,4,1,Arquitectura de un Agente Inteligente Multicanal,video,,0
+10x Builders: Code,4,2,Configuración Inicial de un Agente de IA con Supabase,video,,0
+10x Builders: Code,4,3,Evolución y Próximos Pasos del Agente de IA,video,,0
+10x Builders: Code,4,4,"Fundamentos de SQL: Operaciones CRUD, JOINs e Inteligencia Artificial",video,,0
+10x Builders: Code,4,5,Implementación de Row-Level Security en Supabase,video,,0
+10x Builders: Code,4,6,Integración de Agentes de IA con LLMs usando OpenRouter,video,,0
+10x Builders: Code,4,7,Integración de la API de GitHub en Agentes de IA,video,,0
+10x Builders: Code,4,8,Integración de un Agente de IA Local con Telegram,video,,0
 10x Builders: Code,5,1,El Problema Real: El Cerebro en la Cubeta,video,,0
 10x Builders: Code,6,1,El Problema Real: El Becario Genio con Amnesia,video,,0
 10x Builders: Code,7,1,"El Problema Real: La Trampa del ""Vibe Check""",video,,0
@@ -63,7 +70,14 @@ learning_path,week_number,sort_order,module_name,module_type,group_name,duration
 10x Builders: No-Code,3,8,Despliegue de Aplicaciones Web,video,Semana 3,13
 10x Builders: No-Code,3,9,Dominando Cursor: Desarrollo con IA,video,,22
 10x Builders: No-Code,3,10,Árbol de Decisión para Elegir Herramientas de Desarrollo,video,,4
-10x Builders: No-Code,4,1,"Interfaz, UX y UI: qué significan y por qué importan para tus soluciones de AI",video,,0
+10x Builders: No-Code,4,1,Arquitectura de un Agente Inteligente Multicanal,video,,0
+10x Builders: No-Code,4,2,Configuración Inicial de un Agente de IA con Supabase,video,,0
+10x Builders: No-Code,4,3,Evolución y Próximos Pasos del Agente de IA,video,,0
+10x Builders: No-Code,4,4,"Fundamentos de SQL: Operaciones CRUD, JOINs e Inteligencia Artificial",video,,0
+10x Builders: No-Code,4,5,Implementación de Row-Level Security en Supabase,video,,0
+10x Builders: No-Code,4,6,Integración de Agentes de IA con LLMs usando OpenRouter,video,,0
+10x Builders: No-Code,4,7,Integración de la API de GitHub en Agentes de IA,video,,0
+10x Builders: No-Code,4,8,Integración de un Agente de IA Local con Telegram,video,,0
 10x Builders: No-Code,5,0,De asistentes a agentes autónomos: el cambio de paradigma que está pasando ahora,video,,0
 10x Builders: No-Code,6,0,Cómo la IA transforma roles: el framework para identificar oportunidades en cualquier área,video,,0
 10x Builders: No-Code,7,0,"Diseñar evaluaciones para tu sistema: métricas, criterios y casos de prueba",video,,0
